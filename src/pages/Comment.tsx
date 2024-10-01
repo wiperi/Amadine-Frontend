@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import avatar from '../assets/images/react-logo.png';
 import '../styles/Comment.scss';
+import _ from 'lodash';
 
 type user = {
   id: number
@@ -80,13 +81,22 @@ export const Comment: React.FC = () => {
     textAreaRef.current!.value = '' // Clear the comment text
   }
 
+  // Sort comment list
+  const commentSortLatest = () => {
+    const sortCommentList = _.orderBy(commentList, 'time', 'desc')
+    setCommentList(sortCommentList)
+  }
+  const commentSortLikes = () => {
+    const sortCommentList = _.orderBy(commentList, 'likes', 'desc')
+    setCommentList(sortCommentList)
+  }
 
   return (<div>
     <div className="comment">
       <ul className="nav-bar">
         <li className="nav-bar-title">Comments</li>
-        <li className="nav-bar-item active">Latest</li>
-        <li className="nav-bar-item">Popular</li>
+        <li className="nav-bar-item active" onClick={commentSortLatest}>Latest</li>
+        <li className="nav-bar-item" onClick={commentSortLikes}>Popular</li>
       </ul>
 
       <div className="replay-wrap">
