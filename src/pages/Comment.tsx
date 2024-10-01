@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import avatar from '../assets/images/react-logo.png';
 import '../styles/Comment.scss';
 
@@ -49,9 +49,29 @@ export const Comment: React.FC = () => {
     }
   ]
 
-
-
   const [commentList, setCommentList] = useState<commentItem[]>(defaultCommentList)
+
+
+  // Send comment
+  const textAreaRef = useRef<HTMLTextAreaElement>(null)
+
+  const [commentText, setCommentText] = useState<string>('')
+
+  const handleSend = () => {
+    console.log('send !')
+    if (commentText.trim() === '') return
+
+    const newComment: commentItem = {
+      commentId: Math.random() * 1000000,
+      user: currentUser,
+      content: commentText,
+      time: new Date().toLocaleString(),
+      likes: 0
+    }
+
+    setCommentList([...commentList, newComment]); // Rerender the comment list
+    textAreaRef.current!.value = '' // Clear the comment text
+  }
 
 
   return (<div>
@@ -70,8 +90,11 @@ export const Comment: React.FC = () => {
           <textarea
             name=""
             id=""
-            className="replay-box-textarea"></textarea>
-          <button className="replay-box-btn">
+            ref={textAreaRef}
+            className="replay-box-textarea"
+            onChange={(e) => setCommentText(e.target.value)}
+          ></textarea>
+          <button className="replay-box-btn" onClick={handleSend}>
             <span className="replay-box-btn-text">Send</span>
           </button>
         </div>
