@@ -3,13 +3,24 @@
     {
       "commentId": 123123,
       "user": {
-        "userId": 1324324,
+        "id": 1324324,
         "name": "React",
         "avatar": "avatar"
       },
       "content": "React is a JavaScript library for building user interfaces.",
       "time": "2024-02-02 12:00:00",
       "likes": 66
+    },
+    {
+      "commentId": 123124,
+      "user": {
+        "id": 312312312,
+        "name": "Bugger",
+        "avatar": "avatar"
+      },
+      "content": "Bugger is a JavaScript library for building user interfaces.",
+      "time": "2024-02-02 12:00:00",
+      "likes": 99
     }
   ]
 }

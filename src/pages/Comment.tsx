@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import avatar from '../assets/images/react-logo.png';
 import '../styles/Comment.scss';
 
@@ -50,6 +50,13 @@ export const Comment: React.FC = () => {
   ]
 
   const [commentList, setCommentList] = useState<commentItem[]>(defaultCommentList)
+  useEffect(() => {
+    (async function fetchCommentList() {
+      fetch('http://localhost:4000/comments')
+        .then(res => res.json())
+        .then(data => setCommentList(data))      
+    })()
+  }, [])
 
 
   // Send comment
