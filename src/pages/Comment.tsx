@@ -82,21 +82,28 @@ export const Comment: React.FC = () => {
   }
 
   // Sort comment list
+  const popularRef = useRef<HTMLLIElement>(null)
+  const latestRef = useRef<HTMLLIElement>(null)
+
   const commentSortLatest = () => {
     const sortCommentList = _.orderBy(commentList, 'time', 'desc')
     setCommentList(sortCommentList)
+    popularRef.current!.classList.remove('active')
+    latestRef.current!.classList.add('active')
   }
   const commentSortLikes = () => {
     const sortCommentList = _.orderBy(commentList, 'likes', 'desc')
     setCommentList(sortCommentList)
+    popularRef.current!.classList.add('active')
+    latestRef.current!.classList.remove('active')
   }
 
   return (<div>
     <div className="comment">
       <ul className="nav-bar">
         <li className="nav-bar-title">Comments</li>
-        <li className="nav-bar-item active" onClick={commentSortLatest}>Latest</li>
-        <li className="nav-bar-item" onClick={commentSortLikes}>Popular</li>
+        <li className="nav-bar-item active" ref={latestRef} onClick={commentSortLatest}>Latest</li>
+        <li className="nav-bar-item" ref={popularRef} onClick={commentSortLikes}>Popular</li>
       </ul>
 
       <div className="replay-wrap">
@@ -105,8 +112,6 @@ export const Comment: React.FC = () => {
         </div>
         <div className="replay-box-wrap">
           <textarea
-            name=""
-            id=""
             ref={textAreaRef}
             className="replay-box-textarea"
             onChange={(e) => setCommentText(e.target.value)}
