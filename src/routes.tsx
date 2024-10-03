@@ -1,5 +1,6 @@
 import { App } from './App';
 import { Comment } from './pages/Comment';
+import { Counter } from './pages/Counter';
 
 export const routes = [
     {
@@ -9,5 +10,9 @@ export const routes = [
     {
         path: '/comment',
         component: Comment,
+    },
+    {
+        path: '/counter',
+        component: Counter,
     }
 ]
