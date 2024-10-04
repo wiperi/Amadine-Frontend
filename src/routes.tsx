@@ -1,18 +1,28 @@
 import { App } from './App';
+import { Navigation } from './pages/Navigation';
 import { Comment } from './pages/Comment';
 import { Counter } from './pages/Counter';
+import { MainPage } from './pages/MainPage';
 
 export const routes = [
     {
         path: '/',
-        component: App
+        element: <Navigation />
     },
     {
         path: '/comment',
-        component: Comment,
+        element: <Comment />,
     },
     {
         path: '/counter',
-        component: Counter,
-    }
+        element: <Counter />,
+    },
+    {
+        path: '/app',
+        element: <App />,
+    },
+    {
+        path: '/main',
+        element: <MainPage />
+    },
 ]

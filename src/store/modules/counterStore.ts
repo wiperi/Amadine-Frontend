@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk, ThunkAction, AnyAction, Dispatch } from "@reduxjs/toolkit"
 
 const counterStore = createSlice({
   name: 'counter',
@@ -6,6 +6,7 @@ const counterStore = createSlice({
     count: 0
   },
   reducers: {
+    // action creators
     inscrement (state) {
       state.count++
     },
@@ -18,9 +19,18 @@ const counterStore = createSlice({
   }
 })
 
+// async action
+const asyncDecrement = createAsyncThunk('counter/asyncDecrement', async (_, { dispatch }) => {
+  await new Promise(resolve => setTimeout(resolve, 1000))
+  dispatch(decrement())
+})
+const asyncIncrement = () => (dispatch: any) => {
+  new Promise(resolve => setTimeout(resolve, 1000)).then(() => {
+    dispatch(inscrement())
+  })
+}
+
 const { inscrement, decrement, addToNum } = counterStore.actions
 
-const reducer = counterStore.reducer
-
-export { inscrement, decrement, addToNum }
-export default reducer
+export { inscrement, decrement, addToNum, asyncIncrement, asyncDecrement }
+export default counterStore.reducer
