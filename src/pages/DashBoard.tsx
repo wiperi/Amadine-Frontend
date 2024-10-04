@@ -7,30 +7,13 @@ import {
   QuestionCircleOutlined,
 } from '@ant-design/icons';
 import '../styles/global.scss';
+import { Link, Outlet } from 'react-router-dom';
+import { Counter } from './Counter';
 
 const { Header, Sider, Content } = Layout;
 const { Search } = Input;
 
-export const MainPage: React.FC = () => {
-  const [selectedMenuItem, setSelectedMenuItem] = useState('home');
-
-  const handleMenuClick = (key: string) => {
-    setSelectedMenuItem(key);
-  };
-
-  const renderContent = () => {
-    switch (selectedMenuItem) {
-      case 'home':
-        return <h1>Hello World</h1>;
-      case 'discover':
-        return <h1>Discover Page</h1>;
-      case 'library':
-        return <h1>Library Page</h1>;
-      default:
-        return <h1>Hello World</h1>;
-    }
-  };
-
+const DashBoard: React.FC = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Header style={{ display: 'flex', alignItems: 'center', padding: '0 16px'}}>
@@ -54,26 +37,28 @@ export const MainPage: React.FC = () => {
             mode="inline"
             defaultSelectedKeys={['home']}
             style={{ height: '100%', borderRight: 0 }}
-            onSelect={({ key }) => handleMenuClick(key as string)}
           >
             <Menu.Item key="home" icon={<HomeOutlined />}>
-              Home
+              <Link to="home">Home</Link>
             </Menu.Item>
-            <Menu.Item key="discover" icon={<SearchOutlined />}>
-              Discover
+            <Menu.Item key="quiz" icon={<SearchOutlined />}>
+              <Link to="quiz">Quiz</Link>
             </Menu.Item>
-            <Menu.Item key="library" icon={<UserOutlined />}>
-              Library
+            <Menu.Item key="profile" icon={<UserOutlined />}>
+              <Link to="profile">Profile</Link>
             </Menu.Item>
             <Menu.Item key="help" icon={<QuestionCircleOutlined />} style={{ marginTop: 'auto' }}>
-              Help
+              <Link to="help">Help</Link>
             </Menu.Item>
           </Menu>
         </Sider>
         <Content style={{ padding: '24px', minHeight: 280 }}>
-          {renderContent()}
+          {/* {renderContent()} */}
+          <Outlet />
         </Content>
       </Layout>
     </Layout>
   );
 };
+
+export default DashBoard;

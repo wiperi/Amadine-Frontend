@@ -7,7 +7,7 @@ interface Todo {
   completed: boolean;
 }
 
-export const App: React.FC = () => {
+const TodoList: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState<string>('');
 
@@ -67,4 +67,4 @@ export const App: React.FC = () => {
   );
 };
 
-export default App;
+export default TodoList;
