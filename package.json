@@ -7,7 +7,8 @@
     "build": "craco build",
     "test": "craco test",
     "eject": "craco eject",
-    "server": "json-server --watch db.json --port 4000"
+    "server": "json-server --watch db.json --port 4000",
+    "tw:watch": "npx tailwindcss -i ./src/styles/twInput.css -o ./src/styles/global.css --watch"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.7",
@@ -24,7 +25,6 @@
     "react-scripts": "5.0.1",
     "redux": "^5.0.1",
     "sass": "^1.79.4",
-    "typescript": "^5.6.2",
     "web-vitals": "^2.1.4"
   },
   "eslintConfig": {
