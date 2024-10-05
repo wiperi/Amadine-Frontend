@@ -15,12 +15,3 @@ export function loginAPI(email: string, password: string) {
     data: { email, password },
   });
 }
-
-// test
-
-console.log('test');
-registerAPI('test@test.com', 'Pass123456', 'Tom', 'Jerry').then((res) => {
-  console.log(res);
-}, error => {
-  console.log(error);
-});
