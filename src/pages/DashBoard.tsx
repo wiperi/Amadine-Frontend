@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Layout, Menu, Input, Avatar, Button } from 'antd';
 import {
   HomeOutlined,
@@ -6,9 +6,8 @@ import {
   SearchOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
-import '../styles/global.scss';
+import '@/styles/global.scss';
 import { Link, Outlet } from 'react-router-dom';
-import { Counter } from './Counter';
 
 const { Header, Sider, Content } = Layout;
 const { Search } = Input;
