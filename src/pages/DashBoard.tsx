@@ -1,5 +1,4 @@
-import React from 'react';
-import { Layout, Menu, Input, Avatar, Button, ConfigProvider, theme } from 'antd';
+import { Layout, Menu, Input, Avatar, Button, ConfigProvider, theme, Modal } from 'antd';
 import {
   HomeOutlined,
   UserOutlined,
@@ -78,6 +77,15 @@ const DashBoard: React.FC = () => {
           </Content>
         </Layout>
       </Layout>
+
+      <Modal
+        open={true}
+        footer={null}
+        closable={false}
+        centered
+        width={400}
+        bodyStyle={{ padding: '24px' }}
+      ></Modal>
     </ConfigProvider>
   );
 };
