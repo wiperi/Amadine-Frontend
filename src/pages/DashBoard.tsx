@@ -1,4 +1,5 @@
-import { Layout, Menu, Input, Avatar, Button, ConfigProvider, theme, Modal } from 'antd';
+import { Layout, Menu, Input, Avatar, Button, ConfigProvider, theme, Modal, Card } from 'antd';
+import App from './App';
 import {
   HomeOutlined,
   UserOutlined,
@@ -6,7 +7,7 @@ import {
   QuestionCircleOutlined,
 } from '@ant-design/icons';
 import '@/styles/global.css';
-import { Link, Outlet } from 'react-router-dom';
+import { Form, Link, Outlet } from 'react-router-dom';
 import logo from '@/assets/images/react-logo.png';
 
 const { Header, Sider, Content } = Layout;
@@ -84,8 +85,11 @@ const DashBoard: React.FC = () => {
         closable={false}
         centered
         width={400}
-        bodyStyle={{ padding: '24px' }}
-      ></Modal>
+        styles={{ body: { padding: '12px' } }}
+      >
+
+        <App />
+      </Modal>
     </ConfigProvider>
   );
 };

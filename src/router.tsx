@@ -3,12 +3,12 @@ import { Navigation } from './pages/Navigation';
 import { Comment } from './pages/Comment';
 import { Counter } from './pages/Counter';
 import DashBoard from './pages/DashBoard';
-import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import Home from './pages/Home';
 import Quiz from './pages/Quiz';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
+import App from './pages/App';
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +46,10 @@ export const router = createBrowserRouter([
       {
         path: 'comment',
         element: <Comment />,
+      },
+      {
+        path: 'app',
+        element: <App />,
       }
     ]
   }
