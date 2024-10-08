@@ -1,6 +1,6 @@
 import { request } from '../utils';
 
-export function registerAPI(email: string, password: string, nameFirst: string, nameLast: string) {
+export function registerApi(email: string, password: string, nameFirst: string, nameLast: string) {
   return request({
     method: 'post',
     url: '/v1/admin/auth/register',
@@ -8,7 +8,7 @@ export function registerAPI(email: string, password: string, nameFirst: string, 
   });
 }
 
-export function loginAPI(email: string, password: string) {
+export function loginApi(email: string, password: string) {
   return request({
     url: '/v1/admin/auth/login',
     method: 'post',

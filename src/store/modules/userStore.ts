@@ -1,16 +1,38 @@
+import { registerApi } from '@/apis/auth';
 import { createSlice } from '@reduxjs/toolkit';
+import { getToken, setToken as _setToken } from '@/utils';
 
 const userStore = createSlice({
-  name: "user",
-  // 数据状态
+  name: 'user',
+
   initialState: {
-    token: '',
+    token: localStorage.getItem('token') || '',
     userInfo: {
-      name: '',
+      nameFirst: '',
+      nameLast: '',
       email: '',
-    }
+    },
   },
-  // 同步修改方法
+  
   reducers: {
-  }
-})
+    setToken(state, action) {
+      state.token = action.payload;
+      // token persistance
+      _setToken(action.payload);
+    },
+    setUserInfo(state, action) {
+      state.userInfo = action.payload;
+    },
+  },
+});
+
+const fetchRegisterApi = (email: string, password: string, firstName: string, lastName: string) => {
+  return (async (dispatch: any) => {
+    const res = await registerApi(email, password, firstName, lastName);
+    dispatch(setToken(res.data.token));
+  }) as any;
+};
+
+export const { setToken, setUserInfo } = userStore.actions;
+export { fetchRegisterApi as fetchRegister };
+export default userStore.reducer;
