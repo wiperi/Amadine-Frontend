@@ -1,5 +1,5 @@
 import { Layout, Menu, Input, Avatar, Button, ConfigProvider, theme, Modal, Card } from 'antd';
-import App from './App';
+import Login from './Login';
 import {
   HomeOutlined,
   UserOutlined,
@@ -78,18 +78,6 @@ const DashBoard: React.FC = () => {
           </Content>
         </Layout>
       </Layout>
-
-      <Modal
-        open={true}
-        footer={null}
-        closable={false}
-        centered
-        width={400}
-        styles={{ body: { padding: '12px' } }}
-      >
-
-        <App />
-      </Modal>
     </ConfigProvider>
   );
 };

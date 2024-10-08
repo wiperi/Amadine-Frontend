@@ -8,7 +8,7 @@ import Home from './pages/Home';
 import Quiz from './pages/Quiz';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
-import App from './pages/App';
+import Login from './pages/Login';
 
 export const router = createBrowserRouter([
   {
@@ -27,8 +27,12 @@ export const router = createBrowserRouter([
       {
         path: 'profile',
         element: <Profile />,
-      }
+      },
     ]
+  },
+  {
+    path: 'login',
+    element: <Login />,
   },
   {
     path: '/nav',
@@ -49,7 +53,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'app',
-        element: <App />,
+        element: <Login />,
       }
     ]
   }
