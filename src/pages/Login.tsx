@@ -4,7 +4,7 @@ import { Button, Checkbox, Form, Input, Layout, message } from 'antd';
 import '@/styles/global.css';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { fetchRegister } from '@/store/modules/userStore';
+import { fetchRegisterApi, fetchLoginApi } from '@/store/modules/userStore';
 
 const { Content } = Layout;
 
@@ -22,6 +22,7 @@ const Login: React.FC = () => {
   const dispatch = useDispatch();
   const onFinishLogin: FormProps<FieldType>['onFinish'] = (values) => {
     console.log('Success:', values);
+    dispatch(fetchLoginApi(values.email as string, values.password as string));
     message.success('Login successful');
     navigate('/');
   };
@@ -29,7 +30,7 @@ const Login: React.FC = () => {
   const onFinishRegister: FormProps<FieldType>['onFinish'] = async (values) => {
     console.log('Success:', values);
     dispatch(
-      fetchRegister(
+      fetchRegisterApi(
         values.email as string,
         values.password as string,
         values.firstName as string,

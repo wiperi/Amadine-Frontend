@@ -1,4 +1,4 @@
-import { registerApi } from '@/apis/auth';
+import { loginApi, registerApi } from '@/apis/auth';
 import { createSlice } from '@reduxjs/toolkit';
 import { getToken, setToken as _setToken } from '@/utils';
 
@@ -33,6 +33,13 @@ const fetchRegisterApi = (email: string, password: string, firstName: string, la
   }) as any;
 };
 
+const fetchLoginApi = (email: string, password: string) => {
+  return (async (dispatch: any) => {
+    const res = await loginApi(email, password);
+    dispatch(setToken(res.data.token));
+  }) as any;
+};
+
 export const { setToken, setUserInfo } = userStore.actions;
-export { fetchRegisterApi as fetchRegister };
+export { fetchRegisterApi, fetchLoginApi };
 export default userStore.reducer;

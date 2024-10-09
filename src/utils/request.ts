@@ -13,10 +13,12 @@ request.interceptors.request.use(
   (config) => {
     // Add token to query params for GET requests, or to request body for other methods
     const token = getToken();
-    if (config.method === 'get') {
-      config.params = { ...config.params, token };
-    } else {
-      config.data = { ...config.data, token };
+    if (token) {
+      if (config.method === 'get') {
+        config.params = { ...config.params, token };
+      } else {
+        config.data = { ...config.data, token };
+      }
     }
     return config;
   },
