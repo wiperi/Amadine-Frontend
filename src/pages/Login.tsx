@@ -20,25 +20,33 @@ type FieldType = {
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const onFinishLogin: FormProps<FieldType>['onFinish'] = (values) => {
-    console.log('Success:', values);
-    dispatch(fetchLoginApi(values.email as string, values.password as string));
-    message.success('Login successful');
-    navigate('/');
+
+  const onFinishLogin: FormProps<FieldType>['onFinish'] = async (values) => {
+    try {
+      await dispatch(fetchLoginApi(values.email as string, values.password as string));
+      message.success('Login successful');
+      navigate('/');
+    } catch (error: any) {
+      message.error(error.response.data.error);
+    }
   };
 
   const onFinishRegister: FormProps<FieldType>['onFinish'] = async (values) => {
     console.log('Success:', values);
-    dispatch(
-      fetchRegisterApi(
-        values.email as string,
-        values.password as string,
-        values.firstName as string,
-        values.lastName as string
-      )
-    );
-    message.success('Register successful');
-    navigate('/');
+    try {
+      await dispatch(
+        fetchRegisterApi(
+          values.email as string,
+          values.password as string,
+          values.firstName as string,
+          values.lastName as string
+        )
+      );
+      message.success('Register successful');
+      navigate('/');
+    } catch (error: any) {
+      message.error(error.response.data.error);
+    }
   };
 
   const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
