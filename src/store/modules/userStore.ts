@@ -1,4 +1,4 @@
-import { loginApi, registerApi } from '@/apis/auth';
+import { loginApi, registerApi, userDetailsApi } from '@/apis/auth';
 import { createSlice } from '@reduxjs/toolkit';
 import { getToken, setToken as _setToken } from '@/utils';
 
@@ -6,7 +6,7 @@ const userStore = createSlice({
   name: 'user',
 
   initialState: {
-    token: localStorage.getItem('token') || '',
+    token: getToken() || '',
     userInfo: {
       nameFirst: '',
       nameLast: '',
@@ -26,7 +26,7 @@ const userStore = createSlice({
   },
 });
 
-const fetchRegisterApi = (email: string, password: string, firstName: string, lastName: string) => {
+function fetchRegisterApi(email: string, password: string, firstName: string, lastName: string) {
   /**
    * This is outer function.
    *
@@ -48,18 +48,22 @@ const fetchRegisterApi = (email: string, password: string, firstName: string, la
     try {
       const res = await registerApi(email, password, firstName, lastName);
       await dispatch(setToken(res.data.token));
+      const detailsRes = await userDetailsApi();
+      await dispatch(setUserInfo(detailsRes.data));
       return res.data;
     } catch (error: any) {
       throw error;
     }
   }) as any;
-};
+}
 
-const fetchLoginApi = (email: string, password: string) => {
+function fetchLoginApi(email: string, password: string) {
   return (async (dispatch: any) => {
     try {
       const res = await loginApi(email, password);
       await dispatch(setToken(res.data.token));
+      const detailsRes = await userDetailsApi();
+      await dispatch(setUserInfo(detailsRes.data));
       return res.data;
     } catch (error: any) {
       /**
@@ -69,7 +73,7 @@ const fetchLoginApi = (email: string, password: string) => {
       throw error;
     }
   }) as any;
-};
+}
 
 export const { setToken, setUserInfo } = userStore.actions;
 export { fetchRegisterApi, fetchLoginApi };

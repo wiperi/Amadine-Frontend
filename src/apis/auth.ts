@@ -15,3 +15,10 @@ export function loginApi(email: string, password: string) {
     data: { email, password },
   });
 }
+
+export function userDetailsApi() {
+  return request({
+    url: '/v1/admin/user/details',
+    method: 'get',
+  });
+}

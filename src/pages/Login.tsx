@@ -73,7 +73,7 @@ const Login: React.FC = () => {
 
           {/* Login Form */}
           <Form
-            name="basic"
+            name="loginForm"
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 18 }}
             style={{ maxWidth: 600, display: isRegister ? 'none' : 'block' }}
@@ -125,7 +125,7 @@ const Login: React.FC = () => {
 
           {/* Register From */}
           <Form
-            name="basic"
+            name="registerForm"
             labelCol={{ span: 6 }}
             wrapperCol={{ span: 18 }}
             style={{ maxWidth: 600, display: isRegister ? 'block' : 'none' }}
