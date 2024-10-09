@@ -9,12 +9,17 @@ import Quiz from './pages/Quiz';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
+import AuthRoute from './pages/AuthRoute';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     errorElement: <NotFound />,
-    element: <DashBoard />,
+    element: (
+      <AuthRoute>
+        <DashBoard />
+      </AuthRoute>
+    ),
     children: [
       {
         path: 'home',
