@@ -90,7 +90,7 @@ const DashBoard: React.FC = () => {
   console.log(siderCollapsed);
 
   return (
-    <ConfigProvider theme={{ algorithm: theme.defaultAlgorithm }}>
+    <ConfigProvider theme={{ components: { Layout: { bodyBg: 'white' } } }}>
       <Layout style={{ minHeight: '100vh' }}>
         {/* Header */}
         <Header className="fixed flex w-full items-center px-4">
@@ -119,7 +119,7 @@ const DashBoard: React.FC = () => {
             collapsible
             width={200}
             theme="light"
-            className="fixed top-16 h-full"
+            className="fixed top-16 h-full shadow-lg"
           >
             <Menu
               mode="inline"

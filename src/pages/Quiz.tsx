@@ -1,35 +1,22 @@
 import {
   Button,
   Card,
+  Col,
+  ConfigProvider,
   Descriptions,
   DescriptionsProps,
+  Divider,
   FlexProps,
   Layout,
+  Modal,
+  Row,
   Segmented,
   SegmentedProps,
+  theme,
 } from 'antd';
 import { Header, Content } from 'antd/es/layout/layout';
-import React from 'react';
+import React, { useState } from 'react';
 import { Flex } from 'antd';
-import { Meta } from 'antd/es/list/Item';
-
-const boxStyle: React.CSSProperties = {
-  width: '100%',
-  height: 120,
-  borderRadius: 6,
-  border: '1px solid #40a9ff',
-};
-
-const justifyOptions = [
-  'flex-start',
-  'center',
-  'flex-end',
-  'space-between',
-  'space-around',
-  'space-evenly',
-];
-
-const alignOptions = ['flex-start', 'center', 'flex-end', 'stretch', 'baseline'];
 
 const items: DescriptionsProps['items'] = [
   {
@@ -49,49 +36,91 @@ const items: DescriptionsProps['items'] = [
   },
 ];
 
-const QuizDescription: React.FC = () => (
-  <Descriptions title="Quiz Name" items={items} column={1} className="" />
-);
+const QuizDescription: React.FC = () => <Descriptions title="Quiz Name" items={items} column={1} />;
 
 const Quiz: React.FC = () => {
-  const [justify, setJustify] = React.useState<FlexProps['justify']>(justifyOptions[0]);
-  const [alignItems, setAlignItems] = React.useState<FlexProps['align']>(alignOptions[0]);
+
+  /////////////////////////////////////////////////////////////////////
+  // Quiz Edit Modal
+  /////////////////////////////////////////////////////////////////////
+  const [open, setOpen] = useState(false);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [modalText, setModalText] = useState('Content of the modal');
+
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const handleOk = () => {
+    setModalText('The modal will be closed after two seconds');
+    setConfirmLoading(true);
+    setTimeout(() => {
+      setOpen(false);
+      setConfirmLoading(false);
+    }, 2000);
+  };
+
+  const handleCancel = () => {
+    console.log('Clicked cancel button');
+    setOpen(false);
+  };
+
+  const handleEditQuiz = () => {
+    showModal();
+  };
 
   return (
-    <Layout>
-      <Header style={{ backgroundColor: 'white', padding: '0 12px' }}>
-        <Button>Create</Button>
-        <Button>Select</Button>
-        <Segmented<string>
-          options={['Recent', 'Newest', 'Oldest']}
-          onChange={(value) => {
-            console.log(value); // string
-          }}
-        />
-      </Header>
+    <ConfigProvider theme={{ components: { Layout: { bodyBg: 'white', headerBg: 'white' } } }}>
+      <Layout>
+        {/* Control Bar */}
+        <Header className="flex items-center justify-between px-0">
+          <div>
+            <Button className="mr-2">Create</Button>
+            <Button>Select</Button>
+          </div>
+          <Segmented<string>
+            options={['Recent', 'Newest', 'Oldest']}
+            onChange={(value) => {
+              console.log(value); // string
+            }}
+          />
+        </Header>
 
-      <Content>
-        <Flex style={{ flexWrap: 'wrap' }} justify={justify} align={alignItems}>
-          <Card
-            hoverable
-            className="group relative h-60 w-56 overflow-hidden transition-all duration-300"
-            cover={
-              <div className="absolute inset-0">
-                <img
-                  src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-                  alt="Background"
-                  className="h-full w-full object-cover"
-                />
+        {/* Quiz Cards */}
+        <Content>
+          <Flex style={{ flexWrap: 'wrap' }} justify={'flex-start'} align={'flex-start'}>
+            <Card
+              hoverable
+              className="group relative h-60 w-[25%] overflow-hidden transition-all duration-300"
+              cover={
+                <div className="absolute inset-0">
+                  <img
+                    src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+                    alt="Background"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              }
+              onClick={handleEditQuiz}
+            >
+              <div className="absolute left-0 top-44 h-full w-full rounded-lg bg-gray-100 p-4 shadow-lg transition-all duration-300 ease-in-out group-hover:-translate-y-32 group-hover:shadow-xl">
+                <QuizDescription />
               </div>
-            }
-          >
-            <div className="absolute left-0 top-44 h-full w-full rounded-lg bg-white p-4 shadow-lg transition-all duration-300 ease-in-out group-hover:-translate-y-32 group-hover:shadow-xl">
-              <QuizDescription />
-            </div>
-          </Card>
-        </Flex>
-      </Content>
-    </Layout>
+            </Card>
+          </Flex>
+        </Content>
+      </Layout>
+
+      <Modal
+        title="Title"
+        open={open}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <p>{modalText}</p>
+      </Modal>
+    </ConfigProvider>
   );
 };
 
