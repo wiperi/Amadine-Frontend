@@ -8,9 +8,11 @@ const userStore = createSlice({
   initialState: {
     token: getToken() || '',
     userInfo: {
-      nameFirst: '',
-      nameLast: '',
+      userId: 0,
+      name: '',
       email: '',
+      numSuccessfulLogins: 0,
+      numFailedPasswordsSinceLastLogin: 0,
     },
   },
 
@@ -49,7 +51,7 @@ function fetchRegisterApi(email: string, password: string, firstName: string, la
       const res = await registerApi(email, password, firstName, lastName);
       await dispatch(setToken(res.data.token));
       const detailsRes = await userDetailsApi();
-      await dispatch(setUserInfo(detailsRes.data));
+      await dispatch(setUserInfo(detailsRes.data.user));
       return res.data;
     } catch (error: any) {
       throw error;
@@ -63,7 +65,7 @@ function fetchLoginApi(email: string, password: string) {
       const res = await loginApi(email, password);
       await dispatch(setToken(res.data.token));
       const detailsRes = await userDetailsApi();
-      await dispatch(setUserInfo(detailsRes.data));
+      await dispatch(setUserInfo(detailsRes.data.user));
       return res.data;
     } catch (error: any) {
       /**

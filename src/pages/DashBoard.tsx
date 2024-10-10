@@ -1,14 +1,27 @@
-import { Layout, Menu, Input, Avatar, Button, ConfigProvider, theme, Modal, Card } from 'antd';
-import Login from './Login';
+import {
+  Layout,
+  Menu,
+  Input,
+  Avatar,
+  Button,
+  ConfigProvider,
+  theme,
+  Dropdown,
+  Space,
+  MenuProps,
+} from 'antd';
 import {
   HomeOutlined,
   UserOutlined,
   SearchOutlined,
   QuestionCircleOutlined,
+  EditOutlined,
 } from '@ant-design/icons';
 import '@/styles/global.css';
-import { Form, Link, Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import logo from '@/assets/images/react-logo.png';
+import { useDispatch, useSelector } from 'react-redux';
+import { setToken, setUserInfo } from '@/store/modules/userStore';
 
 const { Header, Sider, Content } = Layout;
 const { Search } = Input;
@@ -41,10 +54,40 @@ const DashBoard: React.FC = () => {
     },
   ];
 
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(setToken(''));
+    dispatch(setUserInfo({}));
+  };
+
+  const items: MenuProps['items'] = [
+    {
+      label: <a href="#">Edit Profile</a>,
+      key: '0',
+    },
+    {
+      label: <a href="#">Preferences</a>,
+      key: '1',
+    },
+    {
+      type: 'divider',
+    },
+    {
+      label: <a href="#" onClick={handleLogout}>Logout</a>,
+      key: '3',
+    },
+  ];
+
+
+
+  const userInfo = useSelector((state: any) => state.user.userInfo);
+
   return (
     <ConfigProvider theme={{ algorithm: theme.defaultAlgorithm }}>
       <Layout style={{ minHeight: '100vh' }}>
-        <Header style={{ display: 'flex', alignItems: 'center', padding: '0 16px' }}>
+        {/* Header */}
+        <Header className="flex items-center px-4">
           <div className="logo" style={{ marginRight: '16px', color: 'white' }}>
             <img src={logo} alt="logo" className="h-10 w-10" />
           </div>
@@ -53,14 +96,19 @@ const DashBoard: React.FC = () => {
             style={{ flex: 1, maxWidth: '600px', margin: '0 auto' }}
           />
           <div style={{ marginLeft: 'auto' }}>
-            <Button type="primary" style={{ marginRight: '8px' }}>
-              Create
-            </Button>
-            <Avatar icon={<UserOutlined />} />
+            <Dropdown menu={{ items }} trigger={['click']}>
+              <a onClick={(e) => e.preventDefault()} className="flex items-center">
+                <span style={{ color: 'white', marginRight: '8px' }}>{userInfo.name}</span>
+                <Avatar icon={<UserOutlined />} />
+              </a>
+            </Dropdown>
           </div>
         </Header>
+
+        {/* Body */}
         <Layout>
-          <Sider collapsible width={200} theme="light">
+          {/* Sider */}
+          <Sider collapsible width={200} theme="light" className="">
             <Menu
               mode="inline"
               defaultSelectedKeys={['home']}
@@ -73,6 +121,8 @@ const DashBoard: React.FC = () => {
               ))}
             </Menu>
           </Sider>
+
+          {/* Content */}
           <Content style={{ padding: '24px', minHeight: 280 }}>
             <Outlet />
           </Content>

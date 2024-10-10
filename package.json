@@ -8,7 +8,7 @@
     "test": "craco test",
     "eject": "craco eject",
     "server": "json-server --watch db.json --port 4000",
-    "tw:watch": "npx tailwindcss -i ./src/styles/twInput.css -o ./src/styles/global.css --watch",
+    "tw": "npx tailwindcss -i ./src/styles/twInput.css -o ./src/styles/global.css --watch",
     "ts-node": "node --loader ts-node/esm"
   },
   "dependencies": {
