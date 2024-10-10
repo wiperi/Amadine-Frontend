@@ -22,6 +22,7 @@ import { Link, Outlet } from 'react-router-dom';
 import logo from '@/assets/images/react-logo.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { setToken, setUserInfo } from '@/store/modules/userStore';
+import { useState } from 'react';
 
 const { Header, Sider, Content } = Layout;
 const { Search } = Input;
@@ -74,20 +75,25 @@ const DashBoard: React.FC = () => {
       type: 'divider',
     },
     {
-      label: <a href="#" onClick={handleLogout}>Logout</a>,
+      label: (
+        <a href="#" onClick={handleLogout}>
+          Logout
+        </a>
+      ),
       key: '3',
     },
   ];
 
-
-
   const userInfo = useSelector((state: any) => state.user.userInfo);
+
+  const [siderCollapsed, setSiderCollapsed] = useState(false);
+  console.log(siderCollapsed);
 
   return (
     <ConfigProvider theme={{ algorithm: theme.defaultAlgorithm }}>
       <Layout style={{ minHeight: '100vh' }}>
         {/* Header */}
-        <Header className="flex items-center px-4">
+        <Header className="fixed flex w-full items-center px-4">
           <div className="logo" style={{ marginRight: '16px', color: 'white' }}>
             <img src={logo} alt="logo" className="h-10 w-10" />
           </div>
@@ -108,7 +114,13 @@ const DashBoard: React.FC = () => {
         {/* Body */}
         <Layout>
           {/* Sider */}
-          <Sider collapsible width={200} theme="light" className="">
+          <Sider
+            onCollapse={(collapsed) => setSiderCollapsed(collapsed)}
+            collapsible
+            width={200}
+            theme="light"
+            className="fixed top-16 h-full"
+          >
             <Menu
               mode="inline"
               defaultSelectedKeys={['home']}
@@ -123,7 +135,15 @@ const DashBoard: React.FC = () => {
           </Sider>
 
           {/* Content */}
-          <Content style={{ padding: '24px', minHeight: 280 }}>
+          <Content
+            style={{
+              padding: '24px',
+              minHeight: 280,
+              marginTop: 64,
+              marginLeft: siderCollapsed ? 80 : 200,
+              transition: 'margin-left 0.3s',
+            }}
+          >
             <Outlet />
           </Content>
         </Layout>
