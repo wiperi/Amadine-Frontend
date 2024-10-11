@@ -9,6 +9,8 @@ import {
   Divider,
   FlexProps,
   Form,
+  Input,
+  InputNumber,
   Layout,
   message,
   Modal,
@@ -118,28 +120,62 @@ const Quiz: React.FC = () => {
     },
   ];
 
+
+  interface DataType {
+    key: string;
+    name: string;
+    age: number;
+    address: string;
+  }
+  
+
+  interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
+    editing: boolean;
+    dataIndex: string;
+    title: any;
+    inputType: 'number' | 'text';
+    record: DataType;
+    index: number;
+  }
+
+  const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
+    editing,
+    dataIndex,
+    title,
+    inputType,
+    record,
+    index,
+    children,
+    ...restProps
+  }) => {
+    const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+  
+    return (
+      <td {...restProps}>
+        {editing ? (
+          <Form.Item
+            name={dataIndex}
+            style={{ margin: 0 }}
+            rules={[
+              {
+                required: true,
+                message: `Please Input ${title}!`,
+              },
+            ]}
+          >
+            {inputNode}
+          </Form.Item>
+        ) : (
+          children
+        )}
+      </td>
+    );
+  };
+
   const data = [
     {
       key: 'key1',
       questionName: "John Brown",
-      numOfAnswers: 3,
-      actions: <Button>Edit</Button>,
-    },
-    {
-      key: 'key2',
-      questionName: 'Jim Green',
-      numOfAnswers: 3,
-      actions: (
-        <Collapse>
-          <Collapse.Panel header="Actions" key="1">
-            <Button>Edit</Button>
-          </Collapse.Panel>
-        </Collapse>
-      ),
-    },
-    {
-      key: 'key3',
-      questionName: 'Joe Black',
       numOfAnswers: 3,
       actions: <Button>Edit</Button>,
     },
@@ -257,6 +293,11 @@ const Quiz: React.FC = () => {
           search={false}
           pagination={false}
           dataSource={dataSource}
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
           dragSortKey="sort"
           onDragSortEnd={handleDragSortEnd}
           options={{

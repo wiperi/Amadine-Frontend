@@ -1,7 +1,11 @@
+// This component implements an editable table using Ant Design components
+// It allows users to view, edit, and save changes to a list of data
+
 import React, { useState } from 'react';
 import type { TableProps } from 'antd';
 import { Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
 
+// Define the structure of each data item
 interface DataType {
   key: string;
   name: string;
@@ -9,6 +13,7 @@ interface DataType {
   address: string;
 }
 
+// Generate sample data
 const originData = Array.from({ length: 100 }).map<DataType>((_, i) => ({
   key: i.toString(),
   name: `Edward ${i}`,
@@ -16,6 +21,7 @@ const originData = Array.from({ length: 100 }).map<DataType>((_, i) => ({
   address: `London Park no. ${i}`,
 }));
 
+// Props for the EditableCell component
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
   dataIndex: string;
@@ -25,6 +31,7 @@ interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   index: number;
 }
 
+// EditableCell component for rendering editable cells
 const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   editing,
   dataIndex,
@@ -59,22 +66,27 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   );
 };
 
-const App: React.FC = () => {
+// Main App component
+const EditableTable: React.FC = () => {
   const [form] = Form.useForm();
   const [data, setData] = useState<DataType[]>(originData);
   const [editingKey, setEditingKey] = useState('');
 
+  // Check if a record is currently being edited
   const isEditing = (record: DataType) => record.key === editingKey;
 
+  // Start editing a record
   const edit = (record: Partial<DataType> & { key: React.Key }) => {
     form.setFieldsValue({ name: '', age: '', address: '', ...record });
     setEditingKey(record.key);
   };
 
+  // Cancel editing
   const cancel = () => {
     setEditingKey('');
   };
 
+  // Save changes to a record
   const save = async (key: React.Key) => {
     try {
       const row = (await form.validateFields()) as DataType;
@@ -99,6 +111,7 @@ const App: React.FC = () => {
     }
   };
 
+  // Define table columns
   const columns = [
     {
       title: 'name',
@@ -141,6 +154,7 @@ const App: React.FC = () => {
     },
   ];
 
+  // Merge editable cell properties into columns
   const mergedColumns: TableProps<DataType>['columns'] = columns.map((col) => {
     if (!col.editable) {
       return col;
@@ -157,6 +171,7 @@ const App: React.FC = () => {
     };
   });
 
+  // Render the editable table
   return (
     <Form form={form} component={false}>
       <Table<DataType>
@@ -173,4 +188,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default EditableTable;

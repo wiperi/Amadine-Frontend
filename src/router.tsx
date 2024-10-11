@@ -10,6 +10,8 @@ import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
 import AuthRoute from './pages/AuthRoute';
+import EditableTable from './pages/EditableTable';
+import AdvancedTable from './pages/AdvancedTable';
 
 export const router = createBrowserRouter([
   {
@@ -57,8 +59,12 @@ export const router = createBrowserRouter([
         element: <Comment />,
       },
       {
-        path: 'app',
-        element: <Login />,
+        path: 'et',
+        element: <EditableTable />,
+      },
+      {
+        path: 'at',
+        element: <AdvancedTable />,
       }
     ]
   }
