@@ -18,8 +18,8 @@ import { PlusOutlined, MenuOutlined } from '@ant-design/icons';
 interface TableItem {
   id: string;
   name: string;
-  age: number;
-  address: string;
+  numAnswers: number;
+  Duration: string;
   description: string;
 }
 
@@ -28,17 +28,17 @@ const AdvancedTable: React.FC = () => {
   const [dataSource, setDataSource] = useState<TableItem[]>([
     {
       id: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.',
+      name: 'What is the capital of the moon?',
+      numAnswers: 32,
+      Duration: '44 seconds',
+      description: 'This is a quiz about the moon',
     },
     {
       id: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Bridge Street',
-      description: 'My name is Jim Green, I am 42 years old, living in London No. 1 Bridge Street.',
+      name: 'What is the capital of the moon?',
+      numAnswers: 42,
+      Duration: '44 seconds',
+      description: 'This is a quiz about the moon',
     },
   ]);
 
@@ -59,19 +59,19 @@ const AdvancedTable: React.FC = () => {
       },
     },
     {
-      title: 'Age',
-      dataIndex: 'age',
+      title: '# Answers',
+      dataIndex: 'numAnswers',
       width: 100,
       formItemProps: {
-        rules: [{ required: true, message: 'Age is required' }],
+        rules: [{ required: true, message: 'Number of Answers is required' }],
       },
       renderFormItem: () => <InputNumber min={1} max={120} />,
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
+      title: 'Duration',
+      dataIndex: 'Duration',
       formItemProps: {
-        rules: [{ required: true, message: 'Address is required' }],
+        rules: [{ required: true, message: 'Duration is required' }],
       },
     },
     {
@@ -140,8 +140,8 @@ const AdvancedTable: React.FC = () => {
             const newRow: TableItem = {
               id: newId,
               name: `New Person ${newId}`,
-              age: 25,
-              address: 'Click to edit',
+              numAnswers: 25,
+              Duration: 'Click to edit',
               description: 'New person description',
             };
             setDataSource([...dataSource, newRow]);
