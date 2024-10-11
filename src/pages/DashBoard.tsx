@@ -23,6 +23,7 @@ import logo from '@/assets/images/react-logo.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { setToken, setUserInfo } from '@/store/modules/userStore';
 import { useState } from 'react';
+import enUS from 'antd/locale/en_US';
 
 const { Header, Sider, Content } = Layout;
 const { Search } = Input;
@@ -90,7 +91,7 @@ const DashBoard: React.FC = () => {
   console.log(siderCollapsed);
 
   return (
-    <ConfigProvider theme={{ components: { Layout: { bodyBg: 'white' } } }}>
+    <ConfigProvider theme={{ components: { Layout: { bodyBg: 'white' } } }} locale={enUS}>
       <Layout style={{ minHeight: '100vh' }}>
         {/* Header */}
         <Header className="fixed flex w-full items-center px-4">
