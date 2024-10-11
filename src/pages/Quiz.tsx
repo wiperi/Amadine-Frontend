@@ -32,6 +32,7 @@ import {
   DragSortTable,
 } from '@ant-design/pro-components';
 import { PlusOutlined } from '@ant-design/icons';
+import QuestionEditTable from './QuestionEditTable';
 
 const items: DescriptionsProps['items'] = [
   {
@@ -63,7 +64,7 @@ const waitTime = (time: number = 100) => {
 
 const Quiz: React.FC = () => {
   /////////////////////////////////////////////////////////////////////
-  // Quiz Edit Modal
+  // <Quiz Edit Modal>
   /////////////////////////////////////////////////////////////////////
   const [open, setOpen] = useState(false);
   const [confirmLoading, setConfirmLoading] = useState(false);
@@ -91,105 +92,9 @@ const Quiz: React.FC = () => {
     showModal();
   };
 
-  const [form] = Form.useForm<{ name: string; company: string }>();
-
+  const [form] = Form.useForm<{ name: string; description: string }>();
   /////////////////////////////////////////////////////////////////////
-  // <Drag Sort Table>
-  /////////////////////////////////////////////////////////////////////
-  const columns: ProColumns[] = [
-    {
-      title: 'Sort',
-      dataIndex: 'sort',
-      width: 100,
-    },
-    {
-      title: 'Question Name',
-      dataIndex: 'questionName',
-      className: 'drag-visible',
-      width: 200,
-    },
-    {
-      title: 'Num of Answers',
-      dataIndex: 'numOfAnswers',
-      width: 100,
-    },
-    {
-      title: 'Actions',
-      dataIndex: 'actions',
-      width: 100,
-    },
-  ];
-
-
-  interface DataType {
-    key: string;
-    name: string;
-    age: number;
-    address: string;
-  }
-  
-
-  interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
-    editing: boolean;
-    dataIndex: string;
-    title: any;
-    inputType: 'number' | 'text';
-    record: DataType;
-    index: number;
-  }
-
-  const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
-    editing,
-    dataIndex,
-    title,
-    inputType,
-    record,
-    index,
-    children,
-    ...restProps
-  }) => {
-    const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-  
-    return (
-      <td {...restProps}>
-        {editing ? (
-          <Form.Item
-            name={dataIndex}
-            style={{ margin: 0 }}
-            rules={[
-              {
-                required: true,
-                message: `Please Input ${title}!`,
-              },
-            ]}
-          >
-            {inputNode}
-          </Form.Item>
-        ) : (
-          children
-        )}
-      </td>
-    );
-  };
-
-  const data = [
-    {
-      key: 'key1',
-      questionName: "John Brown",
-      numOfAnswers: 3,
-      actions: <Button>Edit</Button>,
-    },
-  ];
-
-  const [dataSource, setDataSource] = useState(data);
-
-  const handleDragSortEnd = (beforeIndex: number, afterIndex: number, newDataSource: any) => {
-    console.log('排序后的数据', newDataSource);
-    setDataSource(newDataSource);
-    message.success('修改列表排序成功');
-  };
-  /////////////////////////////////////////////////////////////////////
-  // </Drag Sort Table>
+  // </Quiz Edit Modal>
   /////////////////////////////////////////////////////////////////////
 
   return (
@@ -234,21 +139,11 @@ const Quiz: React.FC = () => {
         </Content>
       </Layout>
 
-      {/* <Modal
-        title="Title"
-        open={open}
-        onOk={handleOk}
-        confirmLoading={confirmLoading}
-        onCancel={handleCancel}
-      >
-        <p>{modalText}</p>
-      </Modal> */}
-
       <ModalForm<{
         name: string;
-        company: string;
+        description: string;
       }>
-        title="Edit Quiz"
+        title={<h1 className="text-2xl font-bold mb-6">Edit Quiz</h1>}
         open={open}
         form={form}
         autoFocusFirstInput
@@ -268,51 +163,23 @@ const Quiz: React.FC = () => {
         <ProForm.Group>
           <ProFormText
             width="md"
-            disabled={0 ? true : false}
             name="name"
             label="Quiz Name"
-            tooltip="最长为 24 位"
-            placeholder="请输入名称"
+            placeholder="Quiz Name"
             initialValue="what is the capital of the moon?"
           />
 
           <ProFormText
             width="md"
-            name="company"
+            name="description"
             label="Quiz Description"
-            placeholder="请输入名称"
-            disabled={1 ? true : false}
+            placeholder="Quiz Description"
             initialValue="this is a quiz about the moon"
           />
         </ProForm.Group>
 
-        <DragSortTable
-          headerTitle="Quiz Questions"
-          columns={columns}
-          rowKey="key"
-          search={false}
-          pagination={false}
-          dataSource={dataSource}
-          components={{
-            body: {
-              cell: EditableCell,
-            },
-          }}
-          dragSortKey="sort"
-          onDragSortEnd={handleDragSortEnd}
-          options={{
-            search: false,
-            fullScreen: false,
-            reload: false,
-            setting: false,
-            density: false,
-          }}
-          expandable={{
-            expandedRowRender: (record) => (
-              <div>edit answers {record.questionName}</div>
-            ),
-          }}
-        />
+        <QuestionEditTable />
+
       </ModalForm>
     </ConfigProvider>
   );

@@ -14,6 +14,7 @@ import {
   EditableProTable,
 } from '@ant-design/pro-components';
 import { PlusOutlined, MenuOutlined } from '@ant-design/icons';
+import AnswersEditTable from './AnswersEditTable';
 
 interface TableItem {
   id: string;
@@ -23,7 +24,7 @@ interface TableItem {
   description: string;
 }
 
-const AdvancedTable: React.FC = () => {
+const QuestionEditTable: React.FC = () => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const [dataSource, setDataSource] = useState<TableItem[]>([
     {
@@ -42,6 +43,7 @@ const AdvancedTable: React.FC = () => {
     },
   ]);
 
+  // define shape of columns
   const columns: ProColumns<TableItem>[] = [
     {
       title: 'Sort',
@@ -109,16 +111,20 @@ const AdvancedTable: React.FC = () => {
 
   return (
     <DragSortTable<TableItem>
-      headerTitle="Advanced Editable Table"
+      headerTitle="Questions"
+      // 关闭分页器
+      pagination={false}
       columns={columns}
       rowKey="id"
       dataSource={dataSource}
-      onChange={setDataSource as any}
+      onChange={(value) => setDataSource(value as TableItem[])}
       dragSortKey="sort"
       onDragSortEnd={handleDragSortEnd}
       expandable={{
+        // Render the expanded row with the AnswersEditTable component
         expandedRowRender: (record) => (
-          <Typography.Paragraph>{record.description}</Typography.Paragraph>
+          // <Typography.Paragraph>{record.description}</Typography.Paragraph>
+          <AnswersEditTable />
         ),
       }}
       editable={{
@@ -130,6 +136,14 @@ const AdvancedTable: React.FC = () => {
           message.success('Saved successfully');
         },
         onChange: setEditableRowKeys,
+      }}
+      search={false}
+      options={{
+        search: false,
+        fullScreen: false,
+        reload: false,
+        setting: false,
+        density: false,
       }}
       toolBarRender={() => [
         <Button
@@ -156,4 +170,4 @@ const AdvancedTable: React.FC = () => {
   );
 };
 
-export default AdvancedTable;
+export default QuestionEditTable;

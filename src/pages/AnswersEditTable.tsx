@@ -33,6 +33,7 @@ const AnswersEditTable: React.FC = () => {
       dataIndex: 'correct',
       valueType: 'switch',
       width: '20%',
+      // Define the value enum for the switch
       valueEnum: {
         true: { text: '正确', status: 'Success' },
         false: { text: '错误', status: 'Error' },
@@ -47,7 +48,13 @@ const AnswersEditTable: React.FC = () => {
       title: 'Actions',
       valueType: 'option',
       width: '25%',
+
+      // For every action column, render the following elements
       render: (text, record, _, action) => [
+        // text: the text of current cell
+        // record: the data object of the row
+        // _: the index of the row
+        // action: the action object contains some encapsulated functions
         <a
           key="editable"
           onClick={() => {
@@ -71,9 +78,11 @@ const AnswersEditTable: React.FC = () => {
   return (
     <EditableProTable<Answer>
       rowKey="id"
-      headerTitle="Editable Answers Table"
+      pagination={false}
+      // Column definitions
       columns={columns}
       value={dataSource}
+      // Update the dataSource when the table value changes
       onChange={(value) => setDataSource(value as Answer[])}
       editable={{
         type: 'multiple',
@@ -84,6 +93,8 @@ const AnswersEditTable: React.FC = () => {
         },
         onChange: setEditableKeys,
       }}
+
+      // Logic to add a new line
       recordCreatorProps={{
         position: 'bottom',
         record: () => ({
@@ -91,6 +102,7 @@ const AnswersEditTable: React.FC = () => {
           answer: '',
           correct: false,
         }),
+        creatorButtonText: 'Add a new answer'  // 修改这里
       }}
     />
   );

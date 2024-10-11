@@ -11,7 +11,7 @@ import NotFound from './pages/NotFound';
 import Login from './pages/Login';
 import AuthRoute from './pages/AuthRoute';
 import EditableTable from './pages/EditableTable';
-import AdvancedTable from './pages/AdvancedTable';
+import QuestionEditTable from './pages/QuestionEditTable';
 import AnswersEditTable from './pages/AnswersEditTable';
 
 export const router = createBrowserRouter([
@@ -65,7 +65,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'at',
-        element: <AdvancedTable />,
+        element: <QuestionEditTable />,
       },
       {
         path: 'aet',
