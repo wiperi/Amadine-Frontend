@@ -92,6 +92,10 @@ const Quiz: React.FC = () => {
     showModal();
   };
 
+  const handleCreateQuiz = () => {
+    showModal();
+  };
+
   const [form] = Form.useForm<{ name: string; description: string }>();
   /////////////////////////////////////////////////////////////////////
   // </Quiz Edit Modal>
@@ -103,7 +107,9 @@ const Quiz: React.FC = () => {
         {/* Control Bar */}
         <Header className="flex items-center justify-between px-0">
           <div>
-            <Button className="mr-2">Create</Button>
+            <Button type="primary" className="mr-2" onClick={handleCreateQuiz}>
+              Create
+            </Button>
             <Button>Select</Button>
           </div>
           <Segmented<string>
@@ -139,6 +145,7 @@ const Quiz: React.FC = () => {
         </Content>
       </Layout>
 
+      {/* Quiz Edit Modal */}
       <ModalForm<{
         name: string;
         description: string;
