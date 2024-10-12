@@ -20,7 +20,7 @@ import {
   theme,
 } from 'antd';
 import { Header, Content } from 'antd/es/layout/layout';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Flex } from 'antd';
 import {
   ModalForm,
@@ -33,7 +33,8 @@ import {
 } from '@ant-design/pro-components';
 import { PlusOutlined } from '@ant-design/icons';
 import QuestionEditTable from './QuestionEditTable';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchQuizzes } from '@/store/modules/userStore';
 const items: DescriptionsProps['items'] = [
   {
     key: '1',
@@ -54,15 +55,26 @@ const items: DescriptionsProps['items'] = [
 
 const QuizDescription: React.FC = () => <Descriptions title="Quiz Name" items={items} column={1} />;
 
-const waitTime = (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
-
 const Quiz: React.FC = () => {
+
+  // use dispatch
+  const dispatch = useDispatch();
+
+  // fetch quizzes every time the page is loaded
+  useEffect(() => {
+    try {
+      dispatch(fetchQuizzes());
+    } catch (error) {
+      console.error(error);
+      message.error('Failed to fetch quizzes');
+    }
+  }, []);
+
+  // get quizzes from redux store
+  const quizzes = useSelector((state: any) => state.user.quizzes);
+  console.log(quizzes);
+
+
   /////////////////////////////////////////////////////////////////////
   // <Quiz Edit Modal>
   /////////////////////////////////////////////////////////////////////
@@ -94,6 +106,14 @@ const Quiz: React.FC = () => {
 
   const handleCreateQuiz = () => {
     showModal();
+  };
+
+  const waitTime = (time: number = 100) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(true);
+      }, time);
+    });
   };
 
   const [form] = Form.useForm<{ name: string; description: string }>();

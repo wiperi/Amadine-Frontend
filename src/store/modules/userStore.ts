@@ -1,5 +1,5 @@
-import { loginApi, registerApi, userDetailsApi } from '@/apis/auth';
-import { createSlice } from '@reduxjs/toolkit';
+import { getQuizInfoApi, getQuizListApi, loginApi, registerApi, userDetailsApi } from '@/apis/auth';
+import { createSlice, UnknownAction } from '@reduxjs/toolkit';
 import { getToken, setToken as _setToken } from '@/utils';
 
 const userStore = createSlice({
@@ -14,6 +14,34 @@ const userStore = createSlice({
       numSuccessfulLogins: 0,
       numFailedPasswordsSinceLastLogin: 0,
     },
+    quizzes: [
+      {
+        quizId: 5546,
+        name: 'This is the name of the quiz',
+        timeCreated: 1683019484,
+        timeLastEdited: 1683019484,
+        description: 'This quiz is so we can have a lot of fun',
+        numQuestions: 1,
+        questions: [
+          {
+            questionId: 5546,
+            question: 'Who is the Monarch of England?',
+            duration: 4,
+            points: 5,
+            answers: [
+              {
+                answerId: 2384,
+                answer: 'Prince Charles',
+                colour: 'red',
+                correct: true,
+              },
+            ],
+          },
+        ],
+        duration: 44,
+      },
+    ],
+    editingQuiz: null,
   },
 
   reducers: {
@@ -24,6 +52,9 @@ const userStore = createSlice({
     },
     setUserInfo(state, action) {
       state.userInfo = action.payload;
+    },
+    setQuizzes(state, action) {
+      state.quizzes = action.payload;
     },
   },
 });
@@ -77,6 +108,32 @@ function fetchLoginApi(email: string, password: string) {
   }) as any;
 }
 
-export const { setToken, setUserInfo } = userStore.actions;
-export { fetchRegisterApi, fetchLoginApi };
+function fetchQuizzes() {
+  return (async (dispatch: any) => {
+    try {
+      // get quiz id list
+      const quizIdListRes = await getQuizListApi();
+      const quizIdList = quizIdListRes.data.quizzes.map((quiz) => quiz.quizId);
+      
+      // get quiz detail based on quiz id list
+      const quizDetailListRes = await Promise.all(
+        quizIdList.map((quizId) => getQuizInfoApi(quizId)),
+      );
+      
+      // assemble the quizzes details
+      const quizDetailList = quizDetailListRes.map((res) => res.data);
+      
+      // dispatch the action to set the quizzes
+      dispatch(setQuizzes(quizDetailList));
+      
+      // Return the quiz details for potential further use
+      return quizDetailList;
+    } catch (error) {
+      throw error;
+    }
+  }) as any;
+}
+
+export const { setToken, setUserInfo, setQuizzes } = userStore.actions;
+export { fetchRegisterApi, fetchLoginApi, fetchQuizzes };
 export default userStore.reducer;
