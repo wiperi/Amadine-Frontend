@@ -5,18 +5,7 @@ export type Quiz = {
   timeLastEdited: number;
   description: string;
   numQuestions: number;
-  questions: Array<{
-    questionId: number;
-    question: string;
-    duration: number;
-    points: number;
-    answers: Array<{
-      answerId: number;
-      answer: string;
-      colour: string;
-      correct: boolean;
-    }>;
-  }>;
+  questions: Array<Question>;
   duration: number;
 };
 
@@ -28,3 +17,17 @@ export type UserInfo = {
   numFailedPasswordsSinceLastLogin: number;
 };
 
+export type Question = {
+  questionId: number;
+  question: string;
+  duration: number;
+  points: number;
+  answers: Array<Answer>;
+};
+
+export type Answer = {
+  answerId: number;
+  answer: string;
+  colour: string;
+  correct: boolean;
+};

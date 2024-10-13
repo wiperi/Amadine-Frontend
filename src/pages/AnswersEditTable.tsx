@@ -1,25 +1,18 @@
 import React, { useState } from 'react';
-import {
-  ProColumns,
-  EditableProTable,
-} from '@ant-design/pro-components';
+import { ProColumns, EditableProTable } from '@ant-design/pro-components';
 import { Button, Space } from 'antd';
 // 导入 nanoid 用于生成唯一 ID
-import { nanoid } from 'nanoid';
+import { Answer } from '@/types/UserStore';
 
-type Answer = {
-  id: string;
-  answer: string;
-  correct: boolean;
-};
+const AnswersEditTable: React.FC<{
+  answers: Answer[] | undefined;
+}> = ({ answers }) => {
 
-const mockAnswers: Answer[] = [
-  { id: '1', answer: 'Moon', correct: true },
-  { id: '2', answer: 'Earth', correct: false },
-];
+  const mockAnswers: Answer[] = [
+    { answerId: 1, answer: 'Your Answer', colour: '#000000', correct: true },
+  ];
 
-const AnswersEditTable: React.FC = () => {
-  const [dataSource, setDataSource] = useState<Answer[]>(mockAnswers);
+  const [dataSource, setDataSource] = useState<Answer[]>(answers || mockAnswers);
   const [editableKeys, setEditableKeys] = useState<React.Key[]>([]);
 
   const columns: ProColumns<Answer>[] = [
@@ -58,7 +51,7 @@ const AnswersEditTable: React.FC = () => {
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.id);
+            action?.startEditable?.(record.answerId);
           }}
         >
           Edit
@@ -66,7 +59,7 @@ const AnswersEditTable: React.FC = () => {
         <a
           key="delete"
           onClick={() => {
-            setDataSource(dataSource.filter((item) => item.id !== record.id));
+            setDataSource(dataSource.filter((item) => item.answerId !== record.answerId));
           }}
         >
           Delete
@@ -77,7 +70,7 @@ const AnswersEditTable: React.FC = () => {
 
   return (
     <EditableProTable<Answer>
-      rowKey="id"
+      rowKey="answerId"
       pagination={false}
       // Column definitions
       columns={columns}
@@ -93,20 +86,19 @@ const AnswersEditTable: React.FC = () => {
         },
         onChange: setEditableKeys,
       }}
-
       // Logic to add a new line
       recordCreatorProps={{
         position: 'bottom',
         record: () => ({
-          id: nanoid(), // 使用 nanoid 生成唯一 ID
+          answerId: 0, // 使用 nanoid 生成唯一 ID
           answer: '',
+          colour: '#000000',
           correct: false,
         }),
-        creatorButtonText: 'Add a new answer'  // 修改这里
+        creatorButtonText: 'Add a new answer', // 修改这里
       }}
     />
   );
 };
 
 export default AnswersEditTable;
-

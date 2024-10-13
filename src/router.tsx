@@ -59,18 +59,6 @@ export const router = createBrowserRouter([
         path: 'comment',
         element: <Comment />,
       },
-      {
-        path: 'et',
-        element: <EditableTable />,
-      },
-      {
-        path: 'at',
-        element: <QuestionEditTable />,
-      },
-      {
-        path: 'aet',
-        element: <AnswersEditTable />,
-      }
     ]
   }
 ])

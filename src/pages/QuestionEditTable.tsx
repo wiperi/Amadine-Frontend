@@ -3,33 +3,34 @@ import { Button, Input, InputNumber, Popconfirm, Space, message, Typography } fr
 import { DragSortTable, ProColumns, EditableProTable } from '@ant-design/pro-components';
 import { PlusOutlined, MenuOutlined } from '@ant-design/icons';
 import AnswersEditTable from './AnswersEditTable';
+import { Question, Quiz } from '@/types/UserStore';
 
 interface TableItem {
   id: string;
   name: string;
   numAnswers: number;
   Duration: string;
-  description: string;
 }
 
-const QuestionEditTable: React.FC = () => {
+const QuestionEditTable: React.FC<{
+  questions: Question[] | undefined;
+}> = ({ questions }) => {
+
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
-  const [dataSource, setDataSource] = useState<TableItem[]>([
-    {
-      id: '1',
-      name: 'What is the capital of the moon?',
-      numAnswers: 32,
-      Duration: '44 seconds',
-      description: 'This is a quiz about the moon',
-    },
-    {
-      id: '2',
-      name: 'What is the capital of the moon?',
-      numAnswers: 42,
-      Duration: '44 seconds',
-      description: 'This is a quiz about the moon',
-    },
-  ]);
+
+  // example of dataSource:
+  // [
+  //   { id: '1', name: 'Question 1', numAnswers: 3, Duration: '44 seconds' },
+  //   { id: '2', name: 'Question 2', numAnswers: 2, Duration: '33 seconds' },
+  // ]
+  const [dataSource, setDataSource] = useState<TableItem[]>(
+    questions?.map((question) => ({
+      id: question.questionId.toString(),
+      name: question.question,
+      numAnswers: question.answers.length,
+      Duration: question.duration.toString() + 's',
+    })) || [],
+  );
 
   // define shape of columns
   const columns: ProColumns<TableItem>[] = [
@@ -107,10 +108,12 @@ const QuestionEditTable: React.FC = () => {
       onDragSortEnd={handleDragSortEnd}
       expandable={{
         // Render the expanded row with the AnswersEditTable component
-        expandedRowRender: (record) => (
-          // <Typography.Paragraph>{record.description}</Typography.Paragraph>
-          <AnswersEditTable />
-        ),
+        expandedRowRender: (record) => {
+          const question = questions?.find((question) => question.questionId === parseInt(record.id));
+          return (
+            <AnswersEditTable answers={question?.answers} />
+          );
+        },
       }}
       editable={{
         type: 'multiple',
@@ -142,7 +145,6 @@ const QuestionEditTable: React.FC = () => {
               name: `New Person ${newId}`,
               numAnswers: 25,
               Duration: 'Click to edit',
-              description: 'New person description',
             };
             setDataSource([...dataSource, newRow]);
             setEditableRowKeys([...editableKeys, newId]);

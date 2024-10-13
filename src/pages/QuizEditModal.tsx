@@ -73,7 +73,7 @@ const QuizEditModal: React.FC<{
         />
       </ProForm.Group>
 
-      <QuestionEditTable />
+      <QuestionEditTable questions={quiz?.questions} />
     </ModalForm>
   );
 };
