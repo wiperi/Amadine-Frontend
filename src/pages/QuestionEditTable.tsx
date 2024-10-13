@@ -1,18 +1,6 @@
 import React, { useState } from 'react';
-import {
-  Button,
-  Input,
-  InputNumber,
-  Popconfirm,
-  Space,
-  message,
-  Typography,
-} from 'antd';
-import {
-  DragSortTable,
-  ProColumns,
-  EditableProTable,
-} from '@ant-design/pro-components';
+import { Button, Input, InputNumber, Popconfirm, Space, message, Typography } from 'antd';
+import { DragSortTable, ProColumns, EditableProTable } from '@ant-design/pro-components';
 import { PlusOutlined, MenuOutlined } from '@ant-design/icons';
 import AnswersEditTable from './AnswersEditTable';
 
@@ -55,31 +43,28 @@ const QuestionEditTable: React.FC = () => {
     {
       title: 'Name',
       dataIndex: 'name',
-      width: 150,
+      width: 250,
       formItemProps: {
-        rules: [{ required: true, message: 'Name is required' }],
+        rules: [
+          { required: true, message: 'Name is required' },
+          { min: 5, max: 50, message: 'Name must be between 5 and 50 characters' },
+        ],
       },
     },
     {
       title: '# Answers',
       dataIndex: 'numAnswers',
-      width: 100,
-      formItemProps: {
-        rules: [{ required: true, message: 'Number of Answers is required' }],
-      },
-      renderFormItem: () => <InputNumber min={1} max={120} />,
+      editable: false,
+      renderFormItem: () => <InputNumber min={1} max={180} />,
     },
     {
       title: 'Duration',
       dataIndex: 'Duration',
-      formItemProps: {
-        rules: [{ required: true, message: 'Duration is required' }],
-      },
+      editable: false,
     },
     {
       title: 'Action',
       valueType: 'option',
-      width: 200,
       render: (_, record, __, action) => [
         <a
           key="editable"
@@ -91,7 +76,7 @@ const QuestionEditTable: React.FC = () => {
         </a>,
         <Popconfirm
           key="delete"
-          title="Are you sure to delete this record?"
+          title="Are you sure to delete this question?"
           onConfirm={() => {
             setDataSource(dataSource.filter((item) => item.id !== record.id));
             message.success('Deleted successfully');
@@ -138,6 +123,7 @@ const QuestionEditTable: React.FC = () => {
         onChange: setEditableRowKeys,
       }}
       search={false}
+      // tool bar options
       options={{
         search: false,
         fullScreen: false,

@@ -20,10 +20,11 @@ export type Quiz = {
   duration: number;
 };
 
-export type GetQuizListResponse = {
-  quizzes: Array<{
-    quizId: number;
-    name: string;
-  }>;
-}
+export type UserInfo = {
+  userId: number;
+  name: string;
+  email: string;
+  numSuccessfulLogins: number;
+  numFailedPasswordsSinceLastLogin: number;
+};
 

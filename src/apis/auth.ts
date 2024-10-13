@@ -1,4 +1,4 @@
-import { Quiz, GetQuizListResponse } from '@/types/api';
+import { Quiz, UserInfo } from '@/types/UserStore';
 import { request } from '../utils';
 import { AxiosResponse } from 'axios';
 
@@ -28,13 +28,7 @@ export function loginApi(
 
 export function userDetailsApi(): Promise<
   AxiosResponse<{
-    user: {
-      userId: number;
-      name: string;
-      email: string;
-      numSuccessfulLogins: number;
-      numFailedPasswordsSinceLastLogin: number;
-    };
+    user: UserInfo;
   }>
 > {
   return request({
@@ -43,7 +37,14 @@ export function userDetailsApi(): Promise<
   });
 }
 
-export function getQuizListApi(): Promise<AxiosResponse<GetQuizListResponse>> {
+export function getQuizListApi(): Promise<
+  AxiosResponse<{
+    quizzes: Array<{
+      quizId: number;
+      name: string;
+    }>;
+  }>
+> {
   return request({
     url: '/v1/admin/quiz/list',
     method: 'get',
