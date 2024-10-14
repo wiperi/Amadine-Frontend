@@ -1,7 +1,9 @@
 import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-form';
 import QuestionEditTable from './QuestionEditTable';
-import { Form, message } from 'antd';
+import { Button, Form, message } from 'antd';
 import { Quiz } from '@/types/UserStore';
+import { useDispatch } from 'react-redux';
+import { fetchCreateQuiz } from '@/store/modules/userStore';
 
 const QuizEditModal: React.FC<{
   open: boolean;
@@ -9,14 +11,7 @@ const QuizEditModal: React.FC<{
   quiz: Quiz | undefined;
 }> = ({ open, setOpen, quiz }) => {
   const [form] = Form.useForm<{ name: string; description: string }>();
-
-  const waitTime = (time: number = 100) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, time);
-    });
-  };
+  const dispatch = useDispatch();
 
   return (
     <ModalForm<{
@@ -33,14 +28,29 @@ const QuizEditModal: React.FC<{
       }}
       submitTimeout={2000}
       onFinish={async (values) => {
-        await waitTime(2000);
-        console.log(values);
-        setOpen(false);
-        message.success('Submitted successfully');
-        return true;
+        try {
+          console.log(values);
+          await dispatch(fetchCreateQuiz(values.name, values.description));
+          setOpen(false);
+          message.success('Submitted successfully');
+          return true;
+        } catch (error) {
+          console.log(error);
+          message.error('Failed to submit');
+        }
       }}
       onFinishFailed={() => {
         message.error('Failed to submit');
+      }}
+      submitter={{
+        render: (props, defaultDoms) => {
+          return [
+            <Button key="delete" onClick={() => {/* Add delete logic here */}} danger>
+              Delete
+            </Button>,
+            ...defaultDoms,
+          ];
+        },
       }}
     >
       <ProForm.Group>

@@ -1,7 +1,8 @@
 import { loginApi, registerApi, userDetailsApi } from '@/apis/auth';
-import { getQuizInfoApi, getQuizListApi } from '@/apis/quiz';
+import { createQuizApi, getQuizInfoApi, getQuizListApi } from '@/apis/quiz';
 import { createSlice, UnknownAction } from '@reduxjs/toolkit';
 import { getToken, setToken as _setToken } from '@/utils';
+import { Quiz } from '@/types/UserStore';
 
 const userStore = createSlice({
   name: 'user',
@@ -115,18 +116,18 @@ function fetchQuizzes() {
       // get quiz id list
       const quizIdListRes = await getQuizListApi();
       const quizIdList = quizIdListRes.data.quizzes.map((quiz) => quiz.quizId);
-      
+
       // get quiz detail based on quiz id list
       const quizDetailListRes = await Promise.all(
-        quizIdList.map((quizId) => getQuizInfoApi(quizId)),
+        quizIdList.map((quizId) => getQuizInfoApi(quizId))
       );
-      
+
       // assemble the quizzes details
       const quizDetailList = quizDetailListRes.map((res) => res.data);
-      
+
       // dispatch the action to set the quizzes
       dispatch(setQuizzes(quizDetailList));
-      
+
       // Return the quiz details for potential further use
       return quizDetailList;
     } catch (error) {
@@ -135,6 +136,19 @@ function fetchQuizzes() {
   }) as any;
 }
 
+function fetchCreateQuiz(name: string, description: string) {
+  return (async (dispatch: any, getState: any) => {
+    try {
+      const res = await createQuizApi(name, description);
+      const { data: newQuiz } = await getQuizInfoApi(res.data.quizId);
+      dispatch(setQuizzes([...getState().user.quizzes, newQuiz]));
+      return res.data;
+    } catch (error) {
+      throw error;
+    }
+  }) as any;
+}
+
 export const { setToken, setUserInfo, setQuizzes } = userStore.actions;
-export { fetchRegisterApi, fetchLoginApi, fetchQuizzes };
+export { fetchRegisterApi, fetchLoginApi, fetchQuizzes, fetchCreateQuiz };
 export default userStore.reducer;
