@@ -1,7 +1,5 @@
-import TodoList from './pages/TodoList';
-import { Navigation } from './pages/Navigation';
-import { Comment } from './pages/Comment';
-import { Counter } from './pages/Counter';
+import TodoList from './pages/testPages/TodoList';
+import { Navigation } from './pages/testPages/Navigation';
 import DashBoard from './pages/DashBoard';
 import { createBrowserRouter } from 'react-router-dom';
 import Home from './pages/Home';
@@ -10,9 +8,6 @@ import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
 import AuthRoute from './pages/AuthRoute';
-import EditableTable from './pages/EditableTable';
-import QuestionEditTable from './pages/QuestionEditTable';
-import AnswersEditTable from './pages/AnswersEditTable';
 
 export const router = createBrowserRouter([
   {
@@ -50,14 +45,6 @@ export const router = createBrowserRouter([
       {
         path: 'todoList',
         element: <TodoList />,
-      },
-      {
-        path: 'counter',
-        element: <Counter />,
-      },
-      {
-        path: 'comment',
-        element: <Comment />,
       },
     ]
   }

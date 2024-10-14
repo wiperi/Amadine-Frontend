@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { ProColumns, EditableProTable } from '@ant-design/pro-components';
-import { Button, Space } from 'antd';
-// 导入 nanoid 用于生成唯一 ID
 import { Answer } from '@/types/UserStore';
 
 const AnswersEditTable: React.FC<{

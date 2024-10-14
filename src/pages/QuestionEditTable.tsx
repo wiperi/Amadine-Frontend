@@ -3,47 +3,31 @@ import { Button, Input, InputNumber, Popconfirm, Space, message, Typography } fr
 import { DragSortTable, ProColumns, EditableProTable } from '@ant-design/pro-components';
 import { PlusOutlined, MenuOutlined } from '@ant-design/icons';
 import AnswersEditTable from './AnswersEditTable';
-import { Question, Quiz } from '@/types/UserStore';
-
-interface TableItem {
-  id: string;
-  name: string;
-  numAnswers: number;
-  Duration: string;
-}
+import { Question } from '@/types/UserStore';
 
 const QuestionEditTable: React.FC<{
   questions: Question[] | undefined;
 }> = ({ questions }) => {
-
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
 
   // example of dataSource:
   // [
-  //   { id: '1', name: 'Question 1', numAnswers: 3, Duration: '44 seconds' },
-  //   { id: '2', name: 'Question 2', numAnswers: 2, Duration: '33 seconds' },
+  //   { questionId: 1, question: 'Question 1', duration: 44, points: 1, answers: [] },
+  //   { questionId: 2, question: 'Question 2', duration: 33, points: 1, answers: [] },
   // ]
-  const [dataSource, setDataSource] = useState<TableItem[]>(
-    questions?.map((question) => ({
-      id: question.questionId.toString(),
-      name: question.question,
-      numAnswers: question.answers.length,
-      Duration: question.duration.toString() + 's',
-    })) || [],
-  );
+  const [dataSource, setDataSource] = useState<Question[]>(questions || []);
 
   // define shape of columns
-  const columns: ProColumns<TableItem>[] = [
+  const columns: ProColumns<Question>[] = [
     {
       title: 'Sort',
       dataIndex: 'sort',
-      width: 60,
       className: 'drag-visible',
       editable: false,
     },
     {
       title: 'Name',
-      dataIndex: 'name',
+      dataIndex: 'question',
       width: 250,
       formItemProps: {
         rules: [
@@ -53,14 +37,31 @@ const QuestionEditTable: React.FC<{
       },
     },
     {
+      title: 'Points',
+      dataIndex: 'points',
+      valueType: 'digit',
+      formItemProps: {
+        rules: [
+          { required: true, message: 'Points are required' },
+          {
+            validator: (_, value) => {
+              if (value < 1 || value > 10) {
+                return Promise.reject('Points must be between 1 and 10');
+              }
+              return Promise.resolve();
+            },
+          },
+        ],
+      },
+    },
+    {
       title: '# Answers',
-      dataIndex: 'numAnswers',
       editable: false,
-      renderFormItem: () => <InputNumber min={1} max={180} />,
+      render: (_, record) => record.answers?.length || 0,
     },
     {
       title: 'Duration',
-      dataIndex: 'Duration',
+      dataIndex: 'duration',
       editable: false,
     },
     {
@@ -70,7 +71,7 @@ const QuestionEditTable: React.FC<{
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.id);
+            action?.startEditable?.(record.questionId);
           }}
         >
           Edit
@@ -79,7 +80,7 @@ const QuestionEditTable: React.FC<{
           key="delete"
           title="Are you sure to delete this question?"
           onConfirm={() => {
-            setDataSource(dataSource.filter((item) => item.id !== record.id));
+            setDataSource(dataSource.filter((item) => item.questionId !== record.questionId));
             message.success('Deleted successfully');
           }}
         >
@@ -96,23 +97,23 @@ const QuestionEditTable: React.FC<{
   };
 
   return (
-    <DragSortTable<TableItem>
+    <DragSortTable<Question>
       headerTitle="Questions"
       // 关闭分页器
       pagination={false}
       columns={columns}
-      rowKey="id"
+      rowKey="questionId"
       dataSource={dataSource}
-      onChange={(value) => setDataSource(value as TableItem[])}
+      onChange={(value) => setDataSource(value as Question[])}
       dragSortKey="sort"
       onDragSortEnd={handleDragSortEnd}
       expandable={{
         // Render the expanded row with the AnswersEditTable component
         expandedRowRender: (record) => {
-          const question = questions?.find((question) => question.questionId === parseInt(record.id));
-          return (
-            <AnswersEditTable answers={question?.answers} />
+          const question = questions?.find(
+            (question) => question.questionId === record.questionId
           );
+          return <AnswersEditTable answers={question?.answers} />;
         },
       }}
       editable={{
@@ -139,12 +140,13 @@ const QuestionEditTable: React.FC<{
           type="primary"
           key="add"
           onClick={() => {
-            const newId = (parseInt(dataSource[dataSource.length - 1]?.id || '0') + 1).toString();
-            const newRow: TableItem = {
-              id: newId,
-              name: `New Person ${newId}`,
-              numAnswers: 25,
-              Duration: 'Click to edit',
+            const newId = dataSource.length + 1;
+            const newRow: Question = {
+              questionId: newId,
+              question: `New Question ${newId}`,
+              duration: 25,
+              points: 1,
+              answers: [],
             };
             setDataSource([...dataSource, newRow]);
             setEditableRowKeys([...editableKeys, newId]);

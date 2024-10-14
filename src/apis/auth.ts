@@ -36,24 +36,3 @@ export function userDetailsApi(): Promise<
     method: 'get',
   });
 }
-
-export function getQuizListApi(): Promise<
-  AxiosResponse<{
-    quizzes: Array<{
-      quizId: number;
-      name: string;
-    }>;
-  }>
-> {
-  return request({
-    url: '/v1/admin/quiz/list',
-    method: 'get',
-  });
-}
-
-export function getQuizInfoApi(quizId: number): Promise<AxiosResponse<Quiz>> {
-  return request({
-    url: `/v1/admin/quiz/${quizId}`,
-    method: 'get',
-  });
-}

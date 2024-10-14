@@ -51,6 +51,7 @@ const QuizEditModal: React.FC<{
           placeholder="Quiz Name"
           initialValue={quiz?.name}
           rules={[
+            { required: true, message: 'Quiz name is required' },
             {
               pattern: /^[a-z0-9\s]+$/i,
               message: 'Quiz name can only contain letters, numbers, and spaces',
@@ -65,6 +66,7 @@ const QuizEditModal: React.FC<{
           placeholder="Quiz Description"
           initialValue={quiz?.description}
           rules={[
+            { required: true, message: 'Quiz description is required' },
             {
               max: 100,
               message: 'Description must be less than 100 characters',

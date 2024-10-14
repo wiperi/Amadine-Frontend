@@ -12,7 +12,7 @@ const QuizDescription: React.FC<{ quiz: Quiz }> = ({ quiz }) => {
     {
       key: '2',
       label: 'Time Created',
-      children: new Date(quiz.timeCreated).toLocaleDateString(),
+      children: new Date(quiz.timeCreated * 1000).toLocaleDateString(),
     },
     {
       key: '3',

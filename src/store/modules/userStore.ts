@@ -1,4 +1,5 @@
-import { getQuizInfoApi, getQuizListApi, loginApi, registerApi, userDetailsApi } from '@/apis/auth';
+import { loginApi, registerApi, userDetailsApi } from '@/apis/auth';
+import { getQuizInfoApi, getQuizListApi } from '@/apis/quiz';
 import { createSlice, UnknownAction } from '@reduxjs/toolkit';
 import { getToken, setToken as _setToken } from '@/utils';
 
