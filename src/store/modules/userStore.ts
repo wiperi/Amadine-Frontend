@@ -1,5 +1,5 @@
 import { loginApi, registerApi, userDetailsApi } from '@/apis/auth';
-import { createQuizApi, getQuizInfoApi, getQuizListApi } from '@/apis/quiz';
+import { createQuizApi, deleteQuizApi, getQuizInfoApi, getQuizListApi } from '@/apis/quiz';
 import { createSlice, UnknownAction } from '@reduxjs/toolkit';
 import { getToken, setToken as _setToken } from '@/utils';
 import { Quiz } from '@/types/UserStore';
@@ -149,6 +149,17 @@ function fetchCreateQuiz(name: string, description: string) {
   }) as any;
 }
 
+function fetchDeleteQuiz(quizId: number) {
+  return (async (dispatch: any, getState: any) => {
+    try {
+      await deleteQuizApi(quizId);
+      dispatch(setQuizzes(getState().user.quizzes.filter((quiz: Quiz) => quiz.quizId !== quizId)));
+    } catch (error) {
+      throw error;
+    }
+  }) as any;
+}
+
 export const { setToken, setUserInfo, setQuizzes } = userStore.actions;
-export { fetchRegisterApi, fetchLoginApi, fetchQuizzes, fetchCreateQuiz };
+export { fetchRegisterApi, fetchLoginApi, fetchQuizzes, fetchCreateQuiz, fetchDeleteQuiz };
 export default userStore.reducer;

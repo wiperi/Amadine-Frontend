@@ -1,9 +1,9 @@
 import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-form';
 import QuestionEditTable from './QuestionEditTable';
-import { Button, Form, message } from 'antd';
+import { Button, Form, message, Popconfirm } from 'antd';
 import { Quiz } from '@/types/UserStore';
 import { useDispatch } from 'react-redux';
-import { fetchCreateQuiz } from '@/store/modules/userStore';
+import { fetchCreateQuiz, fetchDeleteQuiz } from '@/store/modules/userStore';
 
 const QuizEditModal: React.FC<{
   open: boolean;
@@ -42,12 +42,33 @@ const QuizEditModal: React.FC<{
       onFinishFailed={() => {
         message.error('Failed to submit');
       }}
+      // modify submitter to add delete button
       submitter={{
         render: (props, defaultDoms) => {
           return [
-            <Button key="delete" onClick={() => {/* Add delete logic here */}} danger>
-              Delete
-            </Button>,
+            quiz && (
+              <Popconfirm
+                title="Are you sure you want to delete this quiz?"
+                onConfirm={async () => {
+                  try {
+                    await dispatch(fetchDeleteQuiz(quiz.quizId));
+                    setOpen(false);
+                    message.success('Deleted successfully');
+                  } catch (error) {
+                    message.error('Failed to delete');
+                  }
+                }}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  key="delete"
+                  danger
+                >
+                  Delete
+                </Button>
+              </Popconfirm>
+            ),
             ...defaultDoms,
           ];
         },

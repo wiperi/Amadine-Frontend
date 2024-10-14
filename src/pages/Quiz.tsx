@@ -66,7 +66,6 @@ const Quiz: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedQuizId, setSelectedQuizId] = useState<number | null>(null);
   const onQuizCardClick = (quizId: number) => {
-    message.info(`Quiz ${quizId} clicked`);
     setSelectedQuizId(quizId);
     setIsModalOpen(true);
   };

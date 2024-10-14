@@ -11,10 +11,10 @@ const request = axios.create({
 // A middleware before send request
 request.interceptors.request.use(
   (config) => {
-    // Add token to query params for GET requests, or to request body for other methods
+    // Add token to query params for GET and DELETE requests, or to request body for other methods
     const token = getToken();
     if (token) {
-      if (config.method === 'get') {
+      if (config.method === 'get' || config.method === 'delete') {
         config.params = { ...config.params, token };
       } else {
         config.data = { ...config.data, token };
