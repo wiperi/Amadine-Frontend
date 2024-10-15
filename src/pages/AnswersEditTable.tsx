@@ -3,6 +3,7 @@ import { ProColumns, EditableProTable } from '@ant-design/pro-components';
 import { Answer, Question } from '@/types/UserStore';
 import { useSelector, useDispatch } from 'react-redux';
 import { setEditingAnswers } from '@/store/modules/userStore';
+import { message } from 'antd';
 
 const AnswersEditTable: React.FC<{
   questionId: number | undefined;
@@ -10,11 +11,9 @@ const AnswersEditTable: React.FC<{
 
   const dispatch = useDispatch();
 
-  let answers: Answer[] | undefined = useSelector((state: any) => state.user.editingQuiz)?.questions
-  ?.find((question: Question) => question.questionId === questionId)?.answers;
+  const answers: Answer[] = useSelector((state: any) => state.user.editingQuiz)?.questions
+    ?.find((question: Question) => question.questionId === questionId)?.answers || [];
 
-
-  const [dataSource, setDataSource] = useState<Answer[]>(answers || []);
   const [editableKeys, setEditableKeys] = useState<React.Key[]>([]);
 
   const columns: ProColumns<Answer>[] = [
@@ -67,9 +66,12 @@ const AnswersEditTable: React.FC<{
         <a
           key="delete"
           onClick={() => {
-            const newAnswers = dataSource.filter((item) => item.answerId !== record.answerId);
-            setDataSource(newAnswers);
+            const newAnswers = answers.filter((item) => item.answerId !== record.answerId);
+            if (!newAnswers.find(answer => answer.correct === true)) {
+              message.warning('At least one answer should be marked as correct.');
+            }
             dispatch(setEditingAnswers({questionId, answers: newAnswers}));
+            message.success('Answer deleted');
           }}
         >
           Delete
@@ -84,28 +86,33 @@ const AnswersEditTable: React.FC<{
       pagination={false}
       // Column definitions
       columns={columns}
-      value={dataSource}
-      // Update the dataSource when the table value changes
-      onChange={(value) => setDataSource(value as Answer[])}
+      value={answers}
+      // Update the answers when the table value changes
+      onChange={(value) => dispatch(setEditingAnswers({questionId, answers: value as Answer[]}))}
       editable={{
         type: 'multiple',
         editableKeys,
         onSave: async (rowKey, data, row) => {
           console.log(rowKey, data, row);
-          dispatch(setEditingAnswers({questionId, answers: [...answers || [], data]}));
-        },
+          const newAnswers = [...answers.filter(answer => answer.answerId !== data.answerId), data];
+          if (!newAnswers.find(answer => answer.correct === true)) {
+            message.warning('At least one answer should be marked as correct.');
+          }
+          dispatch(setEditingAnswers({questionId, answers: newAnswers}));
+          message.success('Answer saved');
+      },
         onChange: setEditableKeys,
       }}
       // Logic to add a new line
       recordCreatorProps={{
         position: 'bottom',
         record: () => ({
-          answerId: dataSource.length + 1,
+          answerId: answers.length + 1,
           answer: '',
           colour: '#000000',
           correct: false,
         }),
-        creatorButtonText: 'Add a new answer', // 修改这里
+        creatorButtonText: 'Add a new answer',
       }}
     />
   );

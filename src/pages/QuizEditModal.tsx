@@ -4,6 +4,7 @@ import { Button, Form, message, Popconfirm } from 'antd';
 import { Quiz } from '@/types/UserStore';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCreateQuiz, fetchDeleteQuiz } from '@/store/modules/userStore';
+import { AxiosError } from 'axios';
 
 const QuizEditModal: React.FC<{
   open: boolean;
@@ -37,7 +38,11 @@ const QuizEditModal: React.FC<{
           return true;
         } catch (error) {
           console.log(error);
-          message.error('Failed to submit');
+          if (error instanceof AxiosError) {
+            message.error(error.response?.data?.error);
+          } else {
+            message.error('Failed to submit');
+          }
         }
       }}
       onFinishFailed={() => {

@@ -5,7 +5,7 @@ import '@/styles/global.css';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { fetchRegisterApi, fetchLoginApi } from '@/store/modules/userStore';
-
+import { AxiosError } from 'axios';
 const { Content } = Layout;
 
 type FieldType = {
@@ -26,8 +26,13 @@ const Login: React.FC = () => {
       await dispatch(fetchLoginApi(values.email as string, values.password as string));
       message.success('Login successful');
       navigate('/');
-    } catch (error: any) {
-      message.error(error.response.data.error);
+    } catch (error) {
+      console.log(error);
+      if (error instanceof AxiosError) {
+        message.error(error.response?.data?.error);
+      } else {
+        message.error('Failed to login');
+      }
     }
   };
 
