@@ -11,6 +11,7 @@ const QuestionEditTable: React.FC<{
 }> = () => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const dispatch = useDispatch();
+  const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
 
   const questions: Question[] = useSelector((state: any) => state.user.editingQuiz)?.questions || [];
 
@@ -122,6 +123,14 @@ const QuestionEditTable: React.FC<{
         // Render the expanded row with the AnswersEditTable component
         expandedRowRender: (record) => {
           return <AnswersEditTable questionId={record.questionId} />;
+        },
+        defaultExpandedRowKeys: expandedRowKeys,
+        onExpand: (expanded, record) => {
+          if (expanded) {
+            setExpandedRowKeys(prevKeys => [...prevKeys, record.questionId]);
+          } else {
+            setExpandedRowKeys(prevKeys => prevKeys.filter(key => key !== record.questionId));
+          }
         },
       }}
       editable={{

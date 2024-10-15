@@ -3,8 +3,8 @@ import { ProColumns, EditableProTable } from '@ant-design/pro-components';
 import { Answer, Question } from '@/types/UserStore';
 import { useSelector, useDispatch } from 'react-redux';
 import { setEditingAnswers } from '@/store/modules/userStore';
-import { message } from 'antd';
-
+import { message, Tooltip } from 'antd';
+import { QuestionCircleOutlined } from '@ant-design/icons';
 const AnswersEditTable: React.FC<{
   questionId: number | undefined;
 }> = ({ questionId }) => {
@@ -18,7 +18,11 @@ const AnswersEditTable: React.FC<{
 
   const columns: ProColumns<Answer>[] = [
     {
-      title: 'Answer',
+      title: (
+        <Tooltip title="Question can have 3 - 6 answers, including at least one correct answer">
+          Answers<span className='ml-1'><QuestionCircleOutlined /></span>
+        </Tooltip>
+      ),
       dataIndex: 'answer',
       width: '40%',
       formItemProps: {
@@ -35,12 +39,12 @@ const AnswersEditTable: React.FC<{
       width: '20%',
       // Define the value enum for the switch
       valueEnum: {
-        true: { text: '正确', status: 'Success' },
-        false: { text: '错误', status: 'Error' },
+        true: { text: 'Correct', status: 'Success' },
+        false: { text: 'Wrong', status: 'Error' },
       },
       render: (_, record) => (
         <span style={{ color: record.correct ? '#52c41a' : '#ff4d4f' }}>
-          {record.correct ? '正确' : '错误'}
+          {record.correct ? 'Correct' : 'Wrong'}
         </span>
       ),
     },
@@ -70,6 +74,12 @@ const AnswersEditTable: React.FC<{
             if (!newAnswers.find(answer => answer.correct === true)) {
               message.warning('At least one answer should be marked as correct.');
             }
+            if (newAnswers.length < 3) {
+              message.warning('At least 3 answers are required.');
+            }
+            if (newAnswers.length > 6) {
+              message.warning('At most 6 answers are allowed.');
+            }
             dispatch(setEditingAnswers({questionId, answers: newAnswers}));
             message.success('Answer deleted');
           }}
@@ -97,6 +107,12 @@ const AnswersEditTable: React.FC<{
           const newAnswers = [...answers.filter(answer => answer.answerId !== data.answerId), data];
           if (!newAnswers.find(answer => answer.correct === true)) {
             message.warning('At least one answer should be marked as correct.');
+          }
+          if (newAnswers.length < 3) {
+            message.warning('At least 3 answers are required.');
+          }
+          if (newAnswers.length > 6) {
+            message.warning('At most 6 answers are allowed.');
           }
           dispatch(setEditingAnswers({questionId, answers: newAnswers}));
           message.success('Answer saved');

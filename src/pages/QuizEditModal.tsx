@@ -15,12 +15,14 @@ const QuizEditModal: React.FC<{
 
   const quiz = useSelector((state: any) => state.user.editingQuiz);
 
+  const isCreatingQuiz = quiz.name === undefined;
+
   return (
     <ModalForm<{
       name: string;
       description: string;
     }>
-      title={<h1 className="mb-6 text-2xl font-bold">{quiz.name ? 'Edit Quiz' : 'Create Quiz'}</h1>}
+      title={<h1 className="mb-6 text-2xl font-bold">{isCreatingQuiz ? 'Create Quiz' : 'Edit Quiz'}</h1>}
       open={open}
       form={form}
       autoFocusFirstInput
@@ -52,7 +54,7 @@ const QuizEditModal: React.FC<{
       submitter={{
         render: (props, defaultDoms) => {
           return [
-            quiz.name && (
+            !isCreatingQuiz && (
               <Popconfirm
                 title="Are you sure you want to delete this quiz?"
                 onConfirm={async () => {
