@@ -5,6 +5,9 @@ import {
   deleteQuizApi,
   getQuizInfoApi,
   getQuizListApi,
+  updateQuizDescriptionApi,
+  updateQuizNameApi,
+  updateQuizQuestionApi,
 } from '@/apis/quiz';
 import { createSlice, UnknownAction } from '@reduxjs/toolkit';
 import { getToken, setToken as _setToken } from '@/utils';
@@ -198,6 +201,34 @@ function fetchCreateQuiz(name: string, description: string) {
   }) as any;
 }
 
+function fetchEditQuiz(quizId: number, name: string, description: string) {
+  return (async (dispatch: any, getState: any) => {
+    try {
+      // change quiz name and description
+      await updateQuizNameApi(quizId, name);
+      await updateQuizDescriptionApi(quizId, description);
+
+      // change questions
+      const editingQuestions: Question[] = getState().user.editingQuiz.questions;
+      for (const q of editingQuestions) {
+        const questionBody = {
+          question: q.question,
+          duration: q.duration,
+          points: q.points,
+          answers: q.answers.map((a) => ({ answer: a.answer, correct: a.correct })),
+        };
+        await updateQuizQuestionApi(quizId, q.questionId, questionBody);
+      }
+
+      const { data: newQuiz } = await getQuizInfoApi(quizId);
+      dispatch(setQuizzes(getState().user.quizzes.map((quiz: Quiz) => quiz.quizId === quizId ? newQuiz : quiz)));
+      return newQuiz;
+    } catch (error) {
+      throw error;
+    }
+  }) as any;
+}
+
 function fetchDeleteQuiz(quizId: number) {
   return (async (dispatch: any, getState: any) => {
     try {
@@ -217,5 +248,5 @@ export const {
   setEditingAnswers,
   setEditingQuestions,
 } = userStore.actions;
-export { fetchRegisterApi, fetchLoginApi, fetchQuizzes, fetchCreateQuiz, fetchDeleteQuiz };
+export { fetchRegisterApi, fetchLoginApi, fetchQuizzes, fetchCreateQuiz, fetchDeleteQuiz, fetchEditQuiz };
 export default userStore.reducer;

@@ -31,15 +31,24 @@ export function createQuizApi(name: string, description: string): Promise<AxiosR
   });
 }
 
-export function updateQuizApi(
+export function updateQuizNameApi(
   quizId: number,
-  name: string,
+  name: string
+): Promise<AxiosResponse<Quiz>> {
+  return request({
+    url: `/v1/admin/quiz/${quizId}/name`,
+    method: 'put',
+    data: { name },
+  });
+}
+export function updateQuizDescriptionApi(
+  quizId: number,
   description: string
 ): Promise<AxiosResponse<Quiz>> {
   return request({
-    url: `/v1/admin/quiz/${quizId}`,
+    url: `/v1/admin/quiz/${quizId}/description`,
     method: 'put',
-    data: { name, description },
+    data: { description },
   });
 }
 
@@ -67,6 +76,18 @@ export function createQuizQuestionApi(
   return request({
     url: `/v1/admin/quiz/${quizId}/question`,
     method: 'post',
+    data: { questionBody },
+  });
+}
+
+export function updateQuizQuestionApi(
+  quizId: number,
+  questionId: number,
+  questionBody: QuestionBody
+): Promise<AxiosResponse<Record<string, never>>> {
+  return request({
+    url: `/v1/admin/quiz/${quizId}/question/${questionId}`,
+    method: 'put',
     data: { questionBody },
   });
 }

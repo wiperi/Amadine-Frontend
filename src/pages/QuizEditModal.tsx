@@ -3,7 +3,7 @@ import QuestionEditTable from './QuestionEditTable';
 import { Button, Form, message, Popconfirm } from 'antd';
 import { Quiz } from '@/types/UserStore';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCreateQuiz, fetchDeleteQuiz } from '@/store/modules/userStore';
+import { fetchCreateQuiz, fetchDeleteQuiz, fetchEditQuiz } from '@/store/modules/userStore';
 import { AxiosError } from 'axios';
 
 const QuizEditModal: React.FC<{
@@ -34,7 +34,11 @@ const QuizEditModal: React.FC<{
       onFinish={async (values) => {
         try {
           console.log(values);
-          await dispatch(fetchCreateQuiz(values.name, values.description));
+          if (isCreatingQuiz) {
+            await dispatch(fetchCreateQuiz(values.name, values.description));
+          } else {
+            await dispatch(fetchEditQuiz(quiz.quizId, values.name, values.description));
+          }
           message.success('Submitted successfully');
           setOpen(false);
           return true;
