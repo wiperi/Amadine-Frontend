@@ -34,7 +34,7 @@ import {
 import { PlusOutlined } from '@ant-design/icons';
 import QuestionEditTable from './QuestionEditTable';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchQuizzes, setEditingQuiz } from '@/store/modules/userStore';
+import { fetchQuizzes, setEditingQuiz, setQuizzes } from '@/store/modules/userStore';
 import { Quiz as QuizType } from '@/types/UserStore';
 import QuizCard from './QuizCard';
 import QuizEditModal from './QuizEditModal';
@@ -87,9 +87,20 @@ const Quiz: React.FC = () => {
             <Button>Select</Button>
           </div>
           <Segmented<string>
-            options={['Recent', 'Newest', 'Oldest']}
+            options={['Recent Edited', 'Newest', 'Oldest']}
             onChange={(value) => {
               console.log(value); // string
+              const sortedQuizzes = quizzes.slice().sort((a, b) => {
+                if (value === 'Recent Edited') {
+                  return b.timeLastEdited - a.timeLastEdited;
+                } else if (value === 'Newest') {
+                  return b.timeCreated - a.timeCreated;
+                } else if (value === 'Oldest') {
+                  return a.timeCreated - b.timeCreated;
+                }
+                return 0;
+              });
+              dispatch(setQuizzes(sortedQuizzes));
             }}
           />
         </Header>

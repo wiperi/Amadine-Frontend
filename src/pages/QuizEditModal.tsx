@@ -5,6 +5,7 @@ import { Quiz } from '@/types/UserStore';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCreateQuiz, fetchDeleteQuiz, fetchEditQuiz } from '@/store/modules/userStore';
 import { AxiosError } from 'axios';
+import React from 'react';
 
 const QuizEditModal: React.FC<{
   open: boolean;
@@ -81,7 +82,12 @@ const QuizEditModal: React.FC<{
                 </Button>
               </Popconfirm>
             ),
-            ...defaultDoms,
+            // change submit button text
+            ...defaultDoms.map(dom => 
+              dom.key === 'submit' 
+                ? React.cloneElement(dom, { children: isCreatingQuiz ? 'Create' : 'Save' })
+                : dom
+            ),
           ];
         },
       }}
