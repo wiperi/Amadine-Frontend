@@ -12,15 +12,7 @@ const QuestionEditTable: React.FC<{
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
   const dispatch = useDispatch();
 
-  const questions: Question[] | undefined = useSelector((state: any) => state.user.editingQuiz)?.questions;
-
-
-  // example of dataSource:
-  // [
-  //   { questionId: 1, question: 'Question 1', duration: 44, points: 1, answers: [] },
-  //   { questionId: 2, question: 'Question 2', duration: 33, points: 1, answers: [] },
-  // ]
-  const [dataSource, setDataSource] = useState<Question[]>(questions || []);
+  const questions: Question[] = useSelector((state: any) => state.user.editingQuiz)?.questions || [];
 
   // define shape of columns
   const columns: ProColumns<Question>[] = [
@@ -98,8 +90,7 @@ const QuestionEditTable: React.FC<{
           key="delete"
           title="Are you sure to delete this question?"
           onConfirm={() => {
-            const newQuestions = dataSource.filter((item) => item.questionId !== record.questionId);
-            setDataSource(newQuestions);
+            const newQuestions = questions.filter((item) => item.questionId !== record.questionId);
             dispatch(setEditingQuestions({questions: newQuestions}));
             message.success('Deleted successfully');
           }}
@@ -110,9 +101,9 @@ const QuestionEditTable: React.FC<{
     },
   ];
 
-  const handleDragSortEnd = (beforeIndex: number, afterIndex: number, newDataSource: any) => {
-    console.log('排序后的数据', newDataSource);
-    setDataSource(newDataSource);
+  const handleDragSortEnd = (beforeIndex: number, afterIndex: number, newQuestions: any) => {
+    console.log('排序后的数据', newQuestions);
+    dispatch(setEditingQuestions({questions: newQuestions}));
     message.success('修改列表排序成功');
   };
 
@@ -123,17 +114,14 @@ const QuestionEditTable: React.FC<{
       pagination={false}
       columns={columns}
       rowKey="questionId"
-      dataSource={dataSource}
-      onChange={(value) => setDataSource(value as Question[])}
+      dataSource={questions}
+      onChange={(value) => dispatch(setEditingQuestions({questions: value as Question[]}))}
       dragSortKey="sort"
       onDragSortEnd={handleDragSortEnd}
       expandable={{
         // Render the expanded row with the AnswersEditTable component
         expandedRowRender: (record) => {
-          const question = questions?.find(
-            (question) => question.questionId === record.questionId
-          );
-          return <AnswersEditTable questionId={question?.questionId} />;
+          return <AnswersEditTable questionId={record.questionId} />;
         },
       }}
       editable={{
@@ -141,11 +129,8 @@ const QuestionEditTable: React.FC<{
         editableKeys,
         onSave: async (rowKey, data, row) => {
           console.log(rowKey, data, row);
-          // Here you would typically make an API call to save the data
-          const newQuestions = dataSource.filter((item) => item.questionId !== data.questionId).concat(data);
+          const newQuestions = questions.map(q => q.questionId === data.questionId ? data : q);
           dispatch(setEditingQuestions({questions: newQuestions}));
-          // update current dataSource
-          setDataSource(newQuestions);
         },
         onChange: setEditableRowKeys,
       }}
@@ -163,7 +148,7 @@ const QuestionEditTable: React.FC<{
           type="primary"
           key="add"
           onClick={() => {
-            const newId = dataSource.length + 1;
+            const newId = questions.length + 1;
             const newRow: Question = {
               questionId: newId,
               question: `New Question ${newId}`,
@@ -171,7 +156,7 @@ const QuestionEditTable: React.FC<{
               points: 1,
               answers: [],
             };
-            setDataSource([...dataSource, newRow]);
+            dispatch(setEditingQuestions({questions: [...questions, newRow]}));
             setEditableRowKeys([...editableKeys, newId]);
           }}
           icon={<PlusOutlined />}
