@@ -1,6 +1,6 @@
-import { Quiz } from "@/types/UserStore";
-import { request } from "@/utils";
-import { AxiosResponse } from "axios";
+import { Quiz } from '@/types/UserStore';
+import { request } from '@/utils';
+import { AxiosResponse } from 'axios';
 
 export function getQuizListApi(): Promise<
   AxiosResponse<{
@@ -31,7 +31,11 @@ export function createQuizApi(name: string, description: string): Promise<AxiosR
   });
 }
 
-export function updateQuizApi(quizId: number, name: string, description: string): Promise<AxiosResponse<Quiz>> {
+export function updateQuizApi(
+  quizId: number,
+  name: string,
+  description: string
+): Promise<AxiosResponse<Quiz>> {
   return request({
     url: `/v1/admin/quiz/${quizId}`,
     method: 'put',
@@ -46,3 +50,23 @@ export function deleteQuizApi(quizId: number): Promise<AxiosResponse<void>> {
   });
 }
 
+type QuestionBody = {
+  question: string;
+  duration: number;
+  points: number;
+  answers: Array<{
+    answer: string;
+    correct: boolean;
+  }>;
+};
+
+export function createQuizQuestionApi(
+  quizId: number,
+  questionBody: QuestionBody
+): Promise<AxiosResponse<{ questionId: number }>> {
+  return request({
+    url: `/v1/admin/quiz/${quizId}/question`,
+    method: 'post',
+    data: { questionBody },
+  });
+}

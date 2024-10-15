@@ -4,11 +4,16 @@ import { DragSortTable, ProColumns, EditableProTable } from '@ant-design/pro-com
 import { PlusOutlined, MenuOutlined } from '@ant-design/icons';
 import AnswersEditTable from './AnswersEditTable';
 import { Question } from '@/types/UserStore';
+import { useSelector, useDispatch } from 'react-redux';
+import { setEditingQuestions } from '@/store/modules/userStore';
 
 const QuestionEditTable: React.FC<{
-  questions: Question[] | undefined;
-}> = ({ questions }) => {
+}> = () => {
   const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
+  const dispatch = useDispatch();
+
+  const questions: Question[] | undefined = useSelector((state: any) => state.user.editingQuiz)?.questions;
+
 
   // example of dataSource:
   // [
@@ -55,14 +60,27 @@ const QuestionEditTable: React.FC<{
       },
     },
     {
+      title: 'Duration',
+      dataIndex: 'duration',
+      valueType: 'digit',
+      formItemProps: {
+        rules: [
+          { required: true, message: 'Duration is required' },
+          {
+            validator: (_, value) => {
+              if (value <= 0) {
+                return Promise.reject('Duration must be a positive number');
+              }
+              return Promise.resolve();
+            },
+          },
+        ],
+      },
+    },
+    {
       title: '# Answers',
       editable: false,
       render: (_, record) => record.answers?.length || 0,
-    },
-    {
-      title: 'Duration',
-      dataIndex: 'duration',
-      editable: false,
     },
     {
       title: 'Action',
@@ -80,7 +98,9 @@ const QuestionEditTable: React.FC<{
           key="delete"
           title="Are you sure to delete this question?"
           onConfirm={() => {
-            setDataSource(dataSource.filter((item) => item.questionId !== record.questionId));
+            const newQuestions = dataSource.filter((item) => item.questionId !== record.questionId);
+            setDataSource(newQuestions);
+            dispatch(setEditingQuestions({questions: newQuestions}));
             message.success('Deleted successfully');
           }}
         >
@@ -113,7 +133,7 @@ const QuestionEditTable: React.FC<{
           const question = questions?.find(
             (question) => question.questionId === record.questionId
           );
-          return <AnswersEditTable answers={question?.answers} />;
+          return <AnswersEditTable questionId={question?.questionId} />;
         },
       }}
       editable={{
@@ -122,7 +142,10 @@ const QuestionEditTable: React.FC<{
         onSave: async (rowKey, data, row) => {
           console.log(rowKey, data, row);
           // Here you would typically make an API call to save the data
-          message.success('Saved successfully');
+          const newQuestions = dataSource.filter((item) => item.questionId !== data.questionId).concat(data);
+          dispatch(setEditingQuestions({questions: newQuestions}));
+          // update current dataSource
+          setDataSource(newQuestions);
         },
         onChange: setEditableRowKeys,
       }}
@@ -144,7 +167,7 @@ const QuestionEditTable: React.FC<{
             const newRow: Question = {
               questionId: newId,
               question: `New Question ${newId}`,
-              duration: 25,
+              duration: 10,
               points: 1,
               answers: [],
             };

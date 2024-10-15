@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import { ProColumns, EditableProTable } from '@ant-design/pro-components';
-import { Answer } from '@/types/UserStore';
+import { Answer, Question } from '@/types/UserStore';
+import { useSelector, useDispatch } from 'react-redux';
+import { setEditingAnswers } from '@/store/modules/userStore';
 
 const AnswersEditTable: React.FC<{
-  answers: Answer[] | undefined;
-}> = ({ answers }) => {
+  questionId: number | undefined;
+}> = ({ questionId }) => {
 
-  const mockAnswers: Answer[] = [
-    { answerId: 1, answer: 'Your Answer', colour: '#000000', correct: true },
-  ];
+  const dispatch = useDispatch();
 
-  const [dataSource, setDataSource] = useState<Answer[]>(answers || mockAnswers);
+  let answers: Answer[] | undefined = useSelector((state: any) => state.user.editingQuiz)?.questions
+  ?.find((question: Question) => question.questionId === questionId)?.answers;
+
+
+  const [dataSource, setDataSource] = useState<Answer[]>(answers || []);
   const [editableKeys, setEditableKeys] = useState<React.Key[]>([]);
 
   const columns: ProColumns<Answer>[] = [
@@ -18,6 +22,12 @@ const AnswersEditTable: React.FC<{
       title: 'Answer',
       dataIndex: 'answer',
       width: '40%',
+      formItemProps: {
+        rules: [
+          { required: true, message: 'Answer is required' },
+          { max: 30, message: 'Answer must be less than 30 characters' },
+        ],
+      },
     },
     {
       title: 'Correct',
@@ -57,7 +67,9 @@ const AnswersEditTable: React.FC<{
         <a
           key="delete"
           onClick={() => {
-            setDataSource(dataSource.filter((item) => item.answerId !== record.answerId));
+            const newAnswers = dataSource.filter((item) => item.answerId !== record.answerId);
+            setDataSource(newAnswers);
+            dispatch(setEditingAnswers({questionId, answers: newAnswers}));
           }}
         >
           Delete
@@ -80,7 +92,7 @@ const AnswersEditTable: React.FC<{
         editableKeys,
         onSave: async (rowKey, data, row) => {
           console.log(rowKey, data, row);
-          // Here you can implement the logic to save the edited data
+          dispatch(setEditingAnswers({questionId, answers: [...answers || [], data]}));
         },
         onChange: setEditableKeys,
       }}
@@ -88,7 +100,7 @@ const AnswersEditTable: React.FC<{
       recordCreatorProps={{
         position: 'bottom',
         record: () => ({
-          answerId: 0, // 使用 nanoid 生成唯一 ID
+          answerId: dataSource.length + 1,
           answer: '',
           colour: '#000000',
           correct: false,

@@ -34,7 +34,7 @@ import {
 import { PlusOutlined } from '@ant-design/icons';
 import QuestionEditTable from './QuestionEditTable';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchQuizzes } from '@/store/modules/userStore';
+import { fetchQuizzes, setEditingQuiz } from '@/store/modules/userStore';
 import { Quiz as QuizType } from '@/types/UserStore';
 import QuizCard from './QuizCard';
 import QuizEditModal from './QuizEditModal';
@@ -67,6 +67,11 @@ const Quiz: React.FC = () => {
   const [selectedQuizId, setSelectedQuizId] = useState<number | null>(null);
   const onQuizCardClick = (quizId: number) => {
     setSelectedQuizId(quizId);
+    const quiz = quizzes.find((quiz) => quiz.quizId === quizId);
+    const emptyQuiz = {
+      questions: [],
+    }
+    dispatch(setEditingQuiz(quiz || emptyQuiz));
     setIsModalOpen(true);
   };
 
@@ -100,7 +105,7 @@ const Quiz: React.FC = () => {
       </Layout>
 
       {/* Quiz Edit Modal */}
-      <QuizEditModal open={isModalOpen} setOpen={setIsModalOpen} quiz={quizzes.find((quiz) => quiz.quizId === selectedQuizId)} />
+      <QuizEditModal open={isModalOpen} setOpen={setIsModalOpen} />
     </ConfigProvider>
   );
 };

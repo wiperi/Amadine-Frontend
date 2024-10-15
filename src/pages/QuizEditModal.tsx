@@ -2,23 +2,24 @@ import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-form';
 import QuestionEditTable from './QuestionEditTable';
 import { Button, Form, message, Popconfirm } from 'antd';
 import { Quiz } from '@/types/UserStore';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchCreateQuiz, fetchDeleteQuiz } from '@/store/modules/userStore';
 
 const QuizEditModal: React.FC<{
   open: boolean;
   setOpen: (open: boolean) => void;
-  quiz: Quiz | undefined;
-}> = ({ open, setOpen, quiz }) => {
+}> = ({ open, setOpen }) => {
   const [form] = Form.useForm<{ name: string; description: string }>();
   const dispatch = useDispatch();
+
+  const quiz = useSelector((state: any) => state.user.editingQuiz);
 
   return (
     <ModalForm<{
       name: string;
       description: string;
     }>
-      title={<h1 className="mb-6 text-2xl font-bold">{quiz ? 'Edit Quiz' : 'Create Quiz'}</h1>}
+      title={<h1 className="mb-6 text-2xl font-bold">{quiz.name ? 'Edit Quiz' : 'Create Quiz'}</h1>}
       open={open}
       form={form}
       autoFocusFirstInput
@@ -31,8 +32,8 @@ const QuizEditModal: React.FC<{
         try {
           console.log(values);
           await dispatch(fetchCreateQuiz(values.name, values.description));
-          setOpen(false);
           message.success('Submitted successfully');
+          setOpen(false);
           return true;
         } catch (error) {
           console.log(error);
@@ -46,7 +47,7 @@ const QuizEditModal: React.FC<{
       submitter={{
         render: (props, defaultDoms) => {
           return [
-            quiz && (
+            quiz.name && (
               <Popconfirm
                 title="Are you sure you want to delete this quiz?"
                 onConfirm={async () => {
@@ -106,7 +107,7 @@ const QuizEditModal: React.FC<{
         />
       </ProForm.Group>
 
-      <QuestionEditTable questions={quiz?.questions} />
+      <QuestionEditTable />
     </ModalForm>
   );
 };
