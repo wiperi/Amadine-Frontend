@@ -10,7 +10,7 @@
     "server": "json-server --watch db.json --port 4000",
     "tw": "npx tailwindcss -i ./src/styles/twInput.css -o ./src/styles/global.css --watch",
     "ts-node": "node --loader ts-node/esm",
-    "host-build": "npx http-server ./build -p 3100"
+    "host-build": "npx http-server ./build -p 3000"
   },
   "dependencies": {
     "@ant-design/pro-components": "^2.7.19",

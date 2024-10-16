@@ -4,7 +4,7 @@ import { router } from '@/router';
 import config from '@/config.json';
 
 const request = axios.create({
-  baseURL: `${config.BACKEND_URL}:${config.BACKEND_PORT}`,
+  baseURL: '/api',
   timeout: 5000,
 });
 
