@@ -9,7 +9,7 @@ tt*
 /coverage
 
 # Production
-/build
+# /build
 
 # Misc
 .DS_Store
