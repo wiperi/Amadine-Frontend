@@ -4,7 +4,7 @@ import { router } from '@/router';
 import config from '@/config.json';
 
 const request = axios.create({
-  baseURL: '/api',
+  baseURL: 'http://139.180.164.78/api',
   timeout: 5000,
 });
 
