@@ -1,7 +1,6 @@
 import { ModalForm, ProForm, ProFormText } from '@ant-design/pro-form';
 import QuestionEditTable from './QuestionEditTable';
 import { Button, Form, message, Popconfirm } from 'antd';
-import { Quiz } from '@/types/UserStore';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCreateQuiz, fetchDeleteQuiz, fetchEditQuiz } from '@/store/modules/userStore';
 import { AxiosError } from 'axios';

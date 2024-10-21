@@ -1,38 +1,13 @@
 import {
   Button,
-  Card,
-  Col,
-  Collapse,
   ConfigProvider,
-  Descriptions,
-  DescriptionsProps,
-  Divider,
-  FlexProps,
-  Form,
-  Input,
-  InputNumber,
+  Flex,
   Layout,
   message,
-  Modal,
-  Row,
   Segmented,
-  SegmentedProps,
-  theme,
 } from 'antd';
-import { Header, Content } from 'antd/es/layout/layout';
+import { Content, Header } from 'antd/es/layout/layout';
 import React, { useEffect, useState } from 'react';
-import { Flex } from 'antd';
-import {
-  ModalForm,
-  ProColumns,
-  ProForm,
-  ProFormDateRangePicker,
-  ProFormSelect,
-  ProFormText,
-  DragSortTable,
-} from '@ant-design/pro-components';
-import { PlusOutlined } from '@ant-design/icons';
-import QuestionEditTable from './QuestionEditTable';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchQuizzes, setEditingQuiz, setQuizzes } from '@/store/modules/userStore';
 import { Quiz as QuizType } from '@/types/UserStore';
@@ -76,7 +51,7 @@ const Quiz: React.FC = () => {
   };
 
   return (
-    <ConfigProvider theme={{ components: { Layout: { bodyBg: 'white', headerBg: 'white' } } }}>
+    <ConfigProvider theme={{ components: { Layout: { headerBg: '#f5f5f5' } } }}>
       <Layout>
         {/* Control Bar */}
         <Header className="flex items-center justify-between px-0">

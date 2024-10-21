@@ -9,7 +9,7 @@ import {
   updateQuizNameApi,
   updateQuizQuestionApi,
 } from '@/apis/quiz';
-import { createSlice, UnknownAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { getToken, setToken as _setToken } from '@/utils';
 import { Question, Quiz } from '@/types/UserStore';
 

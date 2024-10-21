@@ -1,4 +1,4 @@
-import { Quiz, UserInfo } from '@/types/UserStore';
+import { UserInfo } from '@/types/UserStore';
 import { request } from '../utils';
 import { AxiosResponse } from 'axios';
 

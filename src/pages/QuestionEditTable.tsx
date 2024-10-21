@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Button, Input, InputNumber, Popconfirm, Space, message, Typography } from 'antd';
-import { DragSortTable, ProColumns, EditableProTable } from '@ant-design/pro-components';
-import { PlusOutlined, MenuOutlined } from '@ant-design/icons';
+import { Button, Popconfirm, message } from 'antd';
+import { DragSortTable, ProColumns } from '@ant-design/pro-components';
+import { PlusOutlined } from '@ant-design/icons';
 import AnswersEditTable from './AnswersEditTable';
 import { Question } from '@/types/UserStore';
 import { useSelector, useDispatch } from 'react-redux';

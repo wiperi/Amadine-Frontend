@@ -1,10 +1,9 @@
 import axios from 'axios';
 import { getToken, removeToken } from './token';
 import { router } from '@/router';
-import config from '@/config.json';
 
 const request = axios.create({
-  baseURL: 'http://139.180.164.78/api',
+  baseURL: 'http://localhost:3200',
   timeout: 5000,
 });
 

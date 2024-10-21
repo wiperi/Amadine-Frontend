@@ -1,24 +1,12 @@
-import {
-  Layout,
-  Menu,
-  Input,
-  Avatar,
-  Button,
-  ConfigProvider,
-  theme,
-  Dropdown,
-  Space,
-  MenuProps,
-} from 'antd';
+import { Layout, Menu, Input, Avatar, ConfigProvider, Dropdown, MenuProps } from 'antd';
 import {
   HomeOutlined,
   UserOutlined,
   SearchOutlined,
   QuestionCircleOutlined,
-  EditOutlined,
 } from '@ant-design/icons';
 import '@/styles/global.css';
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import logo from '@/assets/images/react-logo.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { setToken, setUserInfo } from '@/store/modules/userStore';
@@ -31,25 +19,25 @@ const { Search } = Input;
 const DashBoard: React.FC = () => {
   const siderTabs = [
     {
-      key: 'home',
+      key: '/home',
       icon: <HomeOutlined />,
       title: 'Home',
       path: 'home',
     },
     {
-      key: 'quiz',
+      key: '/quiz',
       icon: <SearchOutlined />,
       title: 'Quiz',
       path: 'quiz',
     },
     {
-      key: 'profile',
+      key: '/profile',
       icon: <UserOutlined />,
       title: 'Profile',
       path: 'profile',
     },
     {
-      key: 'help',
+      key: '/help',
       icon: <QuestionCircleOutlined />,
       title: 'Help',
       path: 'help',
@@ -88,10 +76,10 @@ const DashBoard: React.FC = () => {
   const userInfo = useSelector((state: any) => state.user.userInfo);
 
   const [siderCollapsed, setSiderCollapsed] = useState(false);
-  console.log(siderCollapsed);
+  const location = useLocation();
 
   return (
-    <ConfigProvider theme={{ components: { Layout: { bodyBg: 'white' } } }} locale={enUS}>
+    <ConfigProvider theme={{ components: { Layout: {} } }} locale={enUS}>
       <Layout style={{ minHeight: '100vh' }}>
         {/* Header */}
         <Header className="fixed flex w-full items-center px-4">
@@ -124,7 +112,7 @@ const DashBoard: React.FC = () => {
           >
             <Menu
               mode="inline"
-              defaultSelectedKeys={['home']}
+              defaultSelectedKeys={[location.pathname]}
               style={{ height: '100%', borderRight: 0 }}
             >
               {siderTabs.map((item) => (
