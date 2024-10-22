@@ -5,11 +5,12 @@ import {
   deleteQuizApi,
   getQuizInfoApi,
   getQuizListApi,
+  getQuizTrashApi,
   updateQuizDescriptionApi,
   updateQuizNameApi,
   updateQuizQuestionApi,
 } from '@/apis/quiz';
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getToken, setToken as _setToken } from '@/utils';
 import { Question, Quiz } from '@/types/UserStore';
 
@@ -69,6 +70,12 @@ const userStore = createSlice({
         },
       ],
     },
+    trashQuizzes: [
+      {
+        quizId: 0,
+        name: 'Deleted Quiz',
+      },
+    ],
   },
 
   reducers: {
@@ -95,6 +102,9 @@ const userStore = createSlice({
     setEditingQuestions(state, action) {
       const newQuestions = action.payload.questions;
       state.editingQuiz.questions = newQuestions;
+    },
+    setTrashQuizzes(state, action) {
+      state.trashQuizzes = action.payload;
     },
   },
 });
@@ -221,7 +231,11 @@ function fetchEditQuiz(quizId: number, name: string, description: string) {
       }
 
       const { data: newQuiz } = await getQuizInfoApi(quizId);
-      dispatch(setQuizzes(getState().user.quizzes.map((quiz: Quiz) => quiz.quizId === quizId ? newQuiz : quiz)));
+      dispatch(
+        setQuizzes(
+          getState().user.quizzes.map((quiz: Quiz) => (quiz.quizId === quizId ? newQuiz : quiz))
+        )
+      );
       return newQuiz;
     } catch (error) {
       throw error;
@@ -240,6 +254,17 @@ function fetchDeleteQuiz(quizId: number) {
   }) as any;
 }
 
+function fetchTrashQuizzes() {
+  return (async (dispatch: any) => {
+    try {
+      const res = await getQuizTrashApi();
+      dispatch(setTrashQuizzes(res.data.quizzes));
+    } catch (error) {
+      throw error;
+    }
+  }) as any;
+}
+
 export const {
   setToken,
   setUserInfo,
@@ -247,6 +272,15 @@ export const {
   setEditingQuiz,
   setEditingAnswers,
   setEditingQuestions,
+  setTrashQuizzes,
 } = userStore.actions;
-export { fetchRegisterApi, fetchLoginApi, fetchQuizzes, fetchCreateQuiz, fetchDeleteQuiz, fetchEditQuiz };
+export {
+  fetchRegisterApi,
+  fetchLoginApi,
+  fetchQuizzes,
+  fetchCreateQuiz,
+  fetchDeleteQuiz,
+  fetchEditQuiz,
+  fetchTrashQuizzes,
+};
 export default userStore.reducer;

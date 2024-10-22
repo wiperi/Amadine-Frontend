@@ -91,3 +91,10 @@ export function updateQuizQuestionApi(
     data: { questionBody },
   });
 }
+
+export function getQuizTrashApi(): Promise<AxiosResponse<{ quizzes: Pick<Quiz, 'quizId' | 'name'>[] }>> {
+  return request({
+    url: '/v1/admin/quiz/trash',
+    method: 'get',
+  });
+}

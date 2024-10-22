@@ -2,8 +2,9 @@ import { configureStore } from '@reduxjs/toolkit';
 import counterReducer from './modules/counterStore';
 import userReducer from './modules/userStore';
 
+type RootState = ReturnType<typeof store.getState>;
 
-function saveState(state: any) {
+function saveState(state: RootState) {
   localStorage.setItem('state', JSON.stringify(state));
 }
 
@@ -31,3 +32,4 @@ store.subscribe(() => {
 });
 
 export default store;
+export type { RootState };

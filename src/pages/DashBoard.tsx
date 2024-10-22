@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setToken, setUserInfo } from '@/store/modules/userStore';
 import { useState } from 'react';
 import enUS from 'antd/locale/en_US';
-
+import { DeleteOutlined } from '@ant-design/icons';
 const { Header, Sider, Content } = Layout;
 const { Search } = Input;
 
@@ -31,16 +31,16 @@ const DashBoard: React.FC = () => {
       path: 'quiz',
     },
     {
-      key: '/profile',
-      icon: <UserOutlined />,
-      title: 'Profile',
-      path: 'profile',
+      key: '/trash-bin',
+      icon: <DeleteOutlined />,
+      title: 'Trash Bin',
+      path: 'trash-bin',
     },
     {
-      key: '/help',
+      key: '/about',
       icon: <QuestionCircleOutlined />,
-      title: 'Help',
-      path: 'help',
+      title: 'About',
+      path: 'about',
     },
   ];
 
