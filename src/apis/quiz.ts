@@ -98,3 +98,18 @@ export function getQuizTrashApi(): Promise<AxiosResponse<{ quizzes: Pick<Quiz, '
     method: 'get',
   });
 }
+
+export function emptyTrashApi(quizIds: number[]): Promise<AxiosResponse<void>> {
+  return request({
+    url: `/v1/admin/quiz/trash/empty?quizIds=[${quizIds.join(',')}]`,
+    method: 'delete',
+  });
+}
+
+export function restoreQuizApi(quizId: number): Promise<AxiosResponse<void>> {
+  return request({
+    url: `/v1/admin/quiz/${quizId}/restore`,
+    method: 'post',
+  });
+}
+

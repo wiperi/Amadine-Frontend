@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTrashQuizzes } from '@/store/modules/userStore';
+import { fetchEmptyTrash, fetchRestoreQuiz, fetchTrashQuizzes } from '@/store/modules/userStore';
 import { RootState } from '@/store';
 import { useEffect } from 'react';
-import { Button} from 'antd';
+import { Button, message, Popconfirm } from 'antd';
 import { useState } from 'react';
 
 const TrashBin: React.FC = () => {
@@ -10,10 +10,10 @@ const TrashBin: React.FC = () => {
 
   const trashQuizzes = useSelector((state: RootState) => state.user.trashQuizzes);
 
-  const mockData = Array.from({ length: 10 }, (_, index) => ({
-    name: `Quiz ${index + 1}`,
-    quizId: index + 1,
-  }));
+  // const trashQuizzes = Array.from({ length: 20 }, (_, index) => ({
+  //   name: `Quiz ${index + 1}`,
+  //   quizId: index + 1,
+  // }));
 
   useEffect(() => {
     dispatch(fetchTrashQuizzes());
@@ -21,67 +21,101 @@ const TrashBin: React.FC = () => {
 
   const [isSelecting, setIsSelecting] = useState<Boolean>(false);
 
+  const [selectedQuizzes, setSelectedQuizzes] = useState<Set<number>>(new Set());
 
   return (
-    <div className="h-[86vh]">
-      <div className="h-[6%]">
-        <Button style={{ marginRight: '10px' }} onClick={() => setIsSelecting(!isSelecting)}>
-          {isSelecting ? 'Deselect All' : 'Select All'}
+    <div className="flex h-[86vh] flex-col">
+      <div id="trash-bin-header" className="mb-4 flex flex-initial flex-wrap items-center gap-2">
+        <Button
+          type={`${isSelecting ? 'primary' : 'default'}`}
+          onClick={() => {
+            if (!isSelecting) {
+              trashQuizzes.forEach((quiz) => {
+                selectedQuizzes.add(quiz.quizId);
+              });
+              setSelectedQuizzes(new Set(selectedQuizzes));
+            } else {
+              setSelectedQuizzes(new Set());
+            }
+            setIsSelecting(!isSelecting);
+          }}
+        >
+          Select All
         </Button>
-        <Button style={{ marginRight: '10px' }}>Restore</Button>
-        <Button danger>Empty Trash Bin</Button>
+        <Button
+          onClick={async () => {
+            if (selectedQuizzes.size === 0) {
+              message.warning('No quizzes selected');
+              return;
+            }
+            try {
+              await dispatch(fetchRestoreQuiz(Array.from(selectedQuizzes)));
+              message.success('Quizzes restored');
+            } catch (error) {
+              console.error('Failed to restore quizzes:', error);
+              message.error('Failed to restore quizzes');
+            }
+            setSelectedQuizzes(new Set());
+          }}
+        >
+          Restore
+        </Button>
+        <Popconfirm
+          title="Are you sure you want to empty the trash bin?"
+          onConfirm={async () => {
+            console.log(Array.from(selectedQuizzes));
+            try {
+              await dispatch(fetchEmptyTrash(Array.from(selectedQuizzes)));
+              message.success('Trash emptied');
+            } catch (error) {
+              console.error('Failed to empty trash:', error);
+              message.error('Failed to empty trash');
+            }
+          }}
+        >
+          <Button color="danger" variant="solid">
+            Empty Trash Bin
+          </Button>
+        </Popconfirm>
       </div>
-      <div className="h-[94%] overflow-y-scroll p-4">
-        {/* <List
-          itemLayout="horizontal"
-          dataSource={mockData}
-          renderItem={(quiz) => (
-            // <List.Item className="h-[200px] outline outline-blue-500 bg-white">
-            //   <List.Item.Meta title={quiz.name} description={`Quiz ID: ${quiz.quizId}`}
-            //   className='bg-blue-500'/>
-            // </List.Item>
-            <List.Item className="outline-blue-500">
-              <div className="h-[12%] outline-blue-500">{quiz.name}</div>
-            </List.Item>
-          )} */}
-        {mockData.map((quiz) => (
-          <div
-            id={`quiz-${quiz.quizId}`}
-            className={`group mb-4 h-[12%] cursor-pointer rounded-sm outline outline-gray-300 transition-all duration-300 ease-in-out`}
-            key={quiz.quizId}
-            onClick={() => {
-              const element = document.getElementById(`quiz-${quiz.quizId}`);
-              if (element) {
-                if (element.classList.contains('outline-gray-300')) {
-                  element.classList.remove('outline-gray-300');
-                  element.classList.add('outline-blue-500');
-                  element.classList.add('outline-4');
-                } else {
-                  element.classList.remove('outline-blue-500');
-                  element.classList.add('outline-gray-300');
-                  element.classList.remove('outline-4');
-                }
-              }
-            }}
-          >
-            {quiz.name}
-            <div
-              id="red dot"
-              className="h-4 w-4 rounded-full outline outline-black group-hover:bg-green-500"
-            ></div>
-          </div>
-        ))}
+      <div id="trash-bin-list" className="flex-initial overflow-y-scroll p-4">
+        {trashQuizzes.map((quiz) => {
+          return (
+            <TrashBinItem
+              quiz={quiz}
+              isSelected={selectedQuizzes.has(quiz.quizId)}
+              onclick={() => {
+                console.log(selectedQuizzes);
+                selectedQuizzes.has(quiz.quizId)
+                  ? selectedQuizzes.delete(quiz.quizId)
+                  : selectedQuizzes.add(quiz.quizId);
+                setSelectedQuizzes(new Set(selectedQuizzes));
+              }}
+            />
+          );
+        })}
       </div>
     </div>
+  );
+};
 
-    // <div className="">
-    //   <div className="">Father</div>
-    //   <div className="h-[200px] overflow-y-auto">
-    //     {Array.from({ length: 100 }, (_, index) => (
-    //       <p key={index}>info</p>
-    //     ))}
-    //   </div>
-    // </div>
+const TrashBinItem: React.FC<{
+  quiz: { name: string; quizId: number };
+  isSelected: boolean;
+  onclick: () => void;
+}> = ({ quiz, isSelected, onclick }) => {
+  const selectedStyle = `outline-blue-500 outline-4`;
+  const unselectedStyle = `outline-gray-300`;
+  return (
+    <div
+      className={`mb-4 flex h-[8%] cursor-pointer items-center justify-between rounded-sm p-4 font-bold outline transition-all duration-300 ease-in-out ${isSelected ? selectedStyle : unselectedStyle}`}
+      onClick={onclick}
+    >
+      <div className="flex-initial overflow-hidden text-ellipsis whitespace-nowrap">
+        {quiz.name}
+      </div>
+      <div className="flex-initial font-light">Quiz ID: {quiz.quizId}</div>
+    </div>
   );
 };
 

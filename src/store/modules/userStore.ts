@@ -3,16 +3,19 @@ import {
   createQuizApi,
   createQuizQuestionApi,
   deleteQuizApi,
+  emptyTrashApi,
   getQuizInfoApi,
   getQuizListApi,
   getQuizTrashApi,
+  restoreQuizApi,
   updateQuizDescriptionApi,
   updateQuizNameApi,
   updateQuizQuestionApi,
 } from '@/apis/quiz';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { getToken, setToken as _setToken } from '@/utils';
 import { Question, Quiz } from '@/types/UserStore';
+import { RootState } from '..';
 
 const userStore = createSlice({
   name: 'user',
@@ -109,7 +112,7 @@ const userStore = createSlice({
   },
 });
 
-function fetchRegisterApi(email: string, password: string, firstName: string, lastName: string) {
+export function fetchRegisterApi(email: string, password: string, firstName: string, lastName: string) {
   /**
    * This is outer function.
    *
@@ -140,7 +143,7 @@ function fetchRegisterApi(email: string, password: string, firstName: string, la
   }) as any;
 }
 
-function fetchLoginApi(email: string, password: string) {
+export function fetchLoginApi(email: string, password: string) {
   return (async (dispatch: any) => {
     try {
       const res = await loginApi(email, password);
@@ -158,7 +161,7 @@ function fetchLoginApi(email: string, password: string) {
   }) as any;
 }
 
-function fetchQuizzes() {
+export function fetchQuizzes() {
   return (async (dispatch: any) => {
     try {
       // get quiz id list
@@ -184,7 +187,7 @@ function fetchQuizzes() {
   }) as any;
 }
 
-function fetchCreateQuiz(name: string, description: string) {
+export function fetchCreateQuiz(name: string, description: string) {
   return (async (dispatch: any, getState: any) => {
     try {
       // create quiz
@@ -211,7 +214,7 @@ function fetchCreateQuiz(name: string, description: string) {
   }) as any;
 }
 
-function fetchEditQuiz(quizId: number, name: string, description: string) {
+export function fetchEditQuiz(quizId: number, name: string, description: string) {
   return (async (dispatch: any, getState: any) => {
     try {
       // change quiz name and description
@@ -243,7 +246,7 @@ function fetchEditQuiz(quizId: number, name: string, description: string) {
   }) as any;
 }
 
-function fetchDeleteQuiz(quizId: number) {
+export function fetchDeleteQuiz(quizId: number) {
   return (async (dispatch: any, getState: any) => {
     try {
       await deleteQuizApi(quizId);
@@ -254,7 +257,7 @@ function fetchDeleteQuiz(quizId: number) {
   }) as any;
 }
 
-function fetchTrashQuizzes() {
+export function fetchTrashQuizzes() {
   return (async (dispatch: any) => {
     try {
       const res = await getQuizTrashApi();
@@ -262,6 +265,23 @@ function fetchTrashQuizzes() {
     } catch (error) {
       throw error;
     }
+  }) as any;
+}
+
+export function fetchEmptyTrash(quizIds: number[]) {
+  return (async (dispatch: any) => {
+    await emptyTrashApi(quizIds);
+    dispatch(setTrashQuizzes([]));
+  }) as any;
+}
+
+export function fetchRestoreQuiz(quizIds: number[]) {
+  return (async (dispatch: Dispatch, getState: () => RootState) => {
+    await Promise.all(quizIds.map(async (quizId) => restoreQuizApi(quizId)));
+    // remove from trash
+    quizIds.forEach((quizId) => {
+      dispatch(setTrashQuizzes(getState().user.trashQuizzes.filter((quiz) => quiz.quizId !== quizId)));
+    });
   }) as any;
 }
 
@@ -274,13 +294,4 @@ export const {
   setEditingQuestions,
   setTrashQuizzes,
 } = userStore.actions;
-export {
-  fetchRegisterApi,
-  fetchLoginApi,
-  fetchQuizzes,
-  fetchCreateQuiz,
-  fetchDeleteQuiz,
-  fetchEditQuiz,
-  fetchTrashQuizzes,
-};
 export default userStore.reducer;
