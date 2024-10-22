@@ -10,7 +10,7 @@
     "server": "json-server --watch db.json --port 4000",
     "tw": "npx tailwindcss -i ./src/styles/twInput.css -o ./src/styles/global.css --watch",
     "ts-node": "node --loader ts-node/esm",
-    "host-build": "npx http-server ./build -p 3000"
+    "analyze": "source-map-explorer build/static/js/*.js"
   },
   "dependencies": {
     "@ant-design/pro-components": "^2.7.19",
@@ -29,6 +29,7 @@
     "react-scripts": "5.0.1",
     "redux": "^5.0.1",
     "sass": "^1.79.4",
+    "source-map-explorer": "^2.5.3",
     "ts-node": "^10.9.2",
     "web-vitals": "^2.1.4"
   },
