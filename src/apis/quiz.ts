@@ -2,7 +2,7 @@ import { Quiz } from '@/types/UserStore';
 import { request } from '@/utils';
 import { AxiosResponse } from 'axios';
 
-export function getQuizListApi(): Promise<
+export function quizList(): Promise<
   AxiosResponse<{
     quizzes: Array<{
       quizId: number;
@@ -16,14 +16,14 @@ export function getQuizListApi(): Promise<
   });
 }
 
-export function getQuizInfoApi(quizId: number): Promise<AxiosResponse<Quiz>> {
+export function quizInfo(quizId: number): Promise<AxiosResponse<Quiz>> {
   return request({
     url: `/v1/admin/quiz/${quizId}`,
     method: 'get',
   });
 }
 
-export function createQuizApi(name: string, description: string): Promise<AxiosResponse<Quiz>> {
+export function quizCreate(name: string, description: string): Promise<AxiosResponse<Quiz>> {
   return request({
     url: '/v1/admin/quiz',
     method: 'post',
@@ -31,7 +31,7 @@ export function createQuizApi(name: string, description: string): Promise<AxiosR
   });
 }
 
-export function updateQuizNameApi(
+export function quizUpdateName(
   quizId: number,
   name: string
 ): Promise<AxiosResponse<Quiz>> {
@@ -41,7 +41,7 @@ export function updateQuizNameApi(
     data: { name },
   });
 }
-export function updateQuizDescriptionApi(
+export function quizUpdateDescription(
   quizId: number,
   description: string
 ): Promise<AxiosResponse<Quiz>> {
@@ -52,7 +52,7 @@ export function updateQuizDescriptionApi(
   });
 }
 
-export function deleteQuizApi(quizId: number): Promise<AxiosResponse<void>> {
+export function quizDelete(quizId: number): Promise<AxiosResponse<void>> {
   return request({
     url: `/v1/admin/quiz/${quizId}`,
     method: 'delete',
@@ -69,7 +69,7 @@ type QuestionBody = {
   }>;
 };
 
-export function createQuizQuestionApi(
+export function questionCreate(
   quizId: number,
   questionBody: QuestionBody
 ): Promise<AxiosResponse<{ questionId: number }>> {
@@ -80,7 +80,7 @@ export function createQuizQuestionApi(
   });
 }
 
-export function updateQuizQuestionApi(
+export function questionUpdate(
   quizId: number,
   questionId: number,
   questionBody: QuestionBody
@@ -92,21 +92,21 @@ export function updateQuizQuestionApi(
   });
 }
 
-export function getQuizTrashApi(): Promise<AxiosResponse<{ quizzes: Pick<Quiz, 'quizId' | 'name'>[] }>> {
+export function quizGetTrash(): Promise<AxiosResponse<{ quizzes: Pick<Quiz, 'quizId' | 'name'>[] }>> {
   return request({
     url: '/v1/admin/quiz/trash',
     method: 'get',
   });
 }
 
-export function emptyTrashApi(quizIds: number[]): Promise<AxiosResponse<void>> {
+export function trashEmpty(quizIds: number[]): Promise<AxiosResponse<void>> {
   return request({
     url: `/v1/admin/quiz/trash/empty?quizIds=[${quizIds.join(',')}]`,
     method: 'delete',
   });
 }
 
-export function restoreQuizApi(quizId: number): Promise<AxiosResponse<void>> {
+export function quizRestore(quizId: number): Promise<AxiosResponse<void>> {
   return request({
     url: `/v1/admin/quiz/${quizId}/restore`,
     method: 'post',

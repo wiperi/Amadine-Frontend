@@ -2,7 +2,7 @@ import { UserInfo } from '@/types/UserStore';
 import { request } from '../utils';
 import { AxiosResponse } from 'axios';
 
-export function registerApi(
+export function userRegister(
   email: string,
   password: string,
   nameFirst: string,
@@ -15,7 +15,7 @@ export function registerApi(
   });
 }
 
-export function loginApi(
+export function userLogin(
   email: string,
   password: string
 ): Promise<AxiosResponse<{ token: string }>> {
@@ -26,7 +26,7 @@ export function loginApi(
   });
 }
 
-export function userDetailsApi(): Promise<
+export function userDetails(): Promise<
   AxiosResponse<{
     user: UserInfo;
   }>

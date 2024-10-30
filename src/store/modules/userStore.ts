@@ -1,16 +1,16 @@
-import { loginApi, registerApi, userDetailsApi } from '@/apis/auth';
+import { userLogin, userRegister, userDetails } from '@/apis/auth';
 import {
-  createQuizApi,
-  createQuizQuestionApi,
-  deleteQuizApi,
-  emptyTrashApi,
-  getQuizInfoApi,
-  getQuizListApi,
-  getQuizTrashApi,
-  restoreQuizApi,
-  updateQuizDescriptionApi,
-  updateQuizNameApi,
-  updateQuizQuestionApi,
+  quizCreate,
+  questionCreate,
+  quizDelete,
+  trashEmpty,
+  quizInfo,
+  quizList,
+  quizGetTrash,
+  quizRestore,
+  quizUpdateDescription,
+  quizUpdateName,
+  questionUpdate,
 } from '@/apis/quiz';
 import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { getToken, setToken as _setToken } from '@/utils';
@@ -132,9 +132,9 @@ export function fetchRegisterApi(email: string, password: string, firstName: str
      */
 
     try {
-      const res = await registerApi(email, password, firstName, lastName);
+      const res = await userRegister(email, password, firstName, lastName);
       await dispatch(setToken(res.data.token));
-      const detailsRes = await userDetailsApi();
+      const detailsRes = await userDetails();
       await dispatch(setUserInfo(detailsRes.data.user));
       return res.data;
     } catch (error: any) {
@@ -146,9 +146,9 @@ export function fetchRegisterApi(email: string, password: string, firstName: str
 export function fetchLoginApi(email: string, password: string) {
   return (async (dispatch: any) => {
     try {
-      const res = await loginApi(email, password);
+      const res = await userLogin(email, password);
       await dispatch(setToken(res.data.token));
-      const detailsRes = await userDetailsApi();
+      const detailsRes = await userDetails();
       await dispatch(setUserInfo(detailsRes.data.user));
       return res.data;
     } catch (error: any) {
@@ -165,12 +165,12 @@ export function fetchQuizzes() {
   return (async (dispatch: any) => {
     try {
       // get quiz id list
-      const quizIdListRes = await getQuizListApi();
+      const quizIdListRes = await quizList();
       const quizIdList = quizIdListRes.data.quizzes.map((quiz) => quiz.quizId);
 
       // get quiz detail based on quiz id list
       const quizDetailListRes = await Promise.all(
-        quizIdList.map((quizId) => getQuizInfoApi(quizId))
+        quizIdList.map((quizId) => quizInfo(quizId))
       );
 
       // assemble the quizzes details
@@ -191,7 +191,7 @@ export function fetchCreateQuiz(name: string, description: string) {
   return (async (dispatch: any, getState: any) => {
     try {
       // create quiz
-      const res = await createQuizApi(name, description);
+      const res = await quizCreate(name, description);
 
       // create questions
       const editingQuestions: Question[] = getState().user.editingQuiz.questions;
@@ -202,10 +202,10 @@ export function fetchCreateQuiz(name: string, description: string) {
           points: q.points,
           answers: q.answers.map((a) => ({ answer: a.answer, correct: a.correct })),
         };
-        await createQuizQuestionApi(res.data.quizId, questionBody);
+        await questionCreate(res.data.quizId, questionBody);
       }
 
-      const { data: newQuiz } = await getQuizInfoApi(res.data.quizId);
+      const { data: newQuiz } = await quizInfo(res.data.quizId);
       dispatch(setQuizzes([...getState().user.quizzes, newQuiz]));
       return res.data;
     } catch (error) {
@@ -218,8 +218,8 @@ export function fetchEditQuiz(quizId: number, name: string, description: string)
   return (async (dispatch: any, getState: any) => {
     try {
       // change quiz name and description
-      await updateQuizNameApi(quizId, name);
-      await updateQuizDescriptionApi(quizId, description);
+      await quizUpdateName(quizId, name);
+      await quizUpdateDescription(quizId, description);
 
       // change questions
       const editingQuestions: Question[] = getState().user.editingQuiz.questions;
@@ -230,10 +230,10 @@ export function fetchEditQuiz(quizId: number, name: string, description: string)
           points: q.points,
           answers: q.answers.map((a) => ({ answer: a.answer, correct: a.correct })),
         };
-        await updateQuizQuestionApi(quizId, q.questionId, questionBody);
+        await questionUpdate(quizId, q.questionId, questionBody);
       }
 
-      const { data: newQuiz } = await getQuizInfoApi(quizId);
+      const { data: newQuiz } = await quizInfo(quizId);
       dispatch(
         setQuizzes(
           getState().user.quizzes.map((quiz: Quiz) => (quiz.quizId === quizId ? newQuiz : quiz))
@@ -249,7 +249,7 @@ export function fetchEditQuiz(quizId: number, name: string, description: string)
 export function fetchDeleteQuiz(quizId: number) {
   return (async (dispatch: any, getState: any) => {
     try {
-      await deleteQuizApi(quizId);
+      await quizDelete(quizId);
       dispatch(setQuizzes(getState().user.quizzes.filter((quiz: Quiz) => quiz.quizId !== quizId)));
     } catch (error) {
       throw error;
@@ -260,7 +260,7 @@ export function fetchDeleteQuiz(quizId: number) {
 export function fetchTrashQuizzes() {
   return (async (dispatch: any) => {
     try {
-      const res = await getQuizTrashApi();
+      const res = await quizGetTrash();
       dispatch(setTrashQuizzes(res.data.quizzes));
     } catch (error) {
       throw error;
@@ -270,14 +270,14 @@ export function fetchTrashQuizzes() {
 
 export function fetchEmptyTrash(quizIds: number[]) {
   return (async (dispatch: any) => {
-    await emptyTrashApi(quizIds);
+    await trashEmpty(quizIds);
     dispatch(setTrashQuizzes([]));
   }) as any;
 }
 
 export function fetchRestoreQuiz(quizIds: number[]) {
   return (async (dispatch: Dispatch, getState: () => RootState) => {
-    await Promise.all(quizIds.map(async (quizId) => restoreQuizApi(quizId)));
+    await Promise.all(quizIds.map(async (quizId) => quizRestore(quizId)));
     // remove from trash
     quizIds.forEach((quizId) => {
       dispatch(setTrashQuizzes(getState().user.trashQuizzes.filter((quiz) => quiz.quizId !== quizId)));
