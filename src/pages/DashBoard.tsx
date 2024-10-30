@@ -7,7 +7,7 @@ import {
 } from '@ant-design/icons';
 import '@/styles/global.css';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import logo from '@/assets/images/react-logo.png';
+import logo from '@/assets/images/logo192.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { setToken, setUserInfo } from '@/store/modules/userStore';
 import { useState } from 'react';
