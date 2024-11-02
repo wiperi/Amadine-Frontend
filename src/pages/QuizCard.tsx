@@ -1,14 +1,14 @@
 import { Descriptions, DescriptionsProps } from 'antd';
 import { Quiz } from '../types/UserStore';
-import { Card } from 'antd';
+import { Card, Button } from 'antd';
 
 const QuizDescription: React.FC<{ quiz: Quiz }> = ({ quiz }) => {
   const items: DescriptionsProps['items'] = [
-    {
-      key: '1',
-      label: 'Num of Questions',
-      children: quiz.numQuestions.toString(),
-    },
+    // {
+    //   key: '1',
+    //   label: 'Num of Questions',
+    //   children: quiz.numQuestions.toString(),
+    // },
     {
       key: '2',
       label: 'Time Created',
@@ -20,8 +20,7 @@ const QuizDescription: React.FC<{ quiz: Quiz }> = ({ quiz }) => {
       children: `${quiz.duration} seconds`,
     },
   ];
-
-  return <Descriptions title={quiz.name} items={items} column={1} />;
+  return <Descriptions title={quiz.name} items={items} column={1} size="small" />;
 };
 
 const QuizCard: React.FC<{ quiz: Quiz; onClick: () => void }> = ({ quiz, onClick }) => {
@@ -42,6 +41,17 @@ const QuizCard: React.FC<{ quiz: Quiz; onClick: () => void }> = ({ quiz, onClick
     >
       <div className="absolute left-0 top-44 h-full w-full rounded-lg bg-gray-100 p-4 shadow-lg transition-all duration-300 ease-in-out group-hover:-translate-y-32 group-hover:shadow-xl">
         <QuizDescription quiz={quiz} />
+        <Button
+          className="absolute left-1/2 mt-4 w-[90%] -translate-x-1/2"
+          type="primary"
+          onClick={(ev) => {
+            ev.stopPropagation();
+            // open a new page
+            window.open(`/quiz-session/${quiz.quizId}`, '_blank');
+          }}
+        >
+          Play
+        </Button>
       </div>
     </Card>
   );

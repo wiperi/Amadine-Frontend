@@ -5,7 +5,6 @@ import {
   SearchOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
-import '@/styles/global.css';
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import logo from '@/assets/images/logo192.png';
 import { useDispatch, useSelector } from 'react-redux';

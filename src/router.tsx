@@ -2,6 +2,8 @@ import TodoList from './pages/testPages/TodoList';
 import { Navigation } from './pages/testPages/Navigation';
 import { createBrowserRouter } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
+import QuizSession from './pages/QuizSession.tsx/QuizSession';
+import PlayerJoin from './pages/QuizSession.tsx/PlayerJoin';
 
 const DashBoard = lazy(() => import('./pages/DashBoard'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -50,6 +52,14 @@ export const router = createBrowserRouter([
   {
     path: 'login',
     element: suspenseWrapper(<Login />),
+  },
+  {
+    path: 'quiz-session/:id',
+    element: suspenseWrapper(<QuizSession />),
+  },
+  {
+    path: 'join',
+    element: suspenseWrapper(<PlayerJoin />),
   },
   {
     path: '/nav',
