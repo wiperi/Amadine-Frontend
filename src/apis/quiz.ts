@@ -113,3 +113,160 @@ export function quizRestore(quizId: number): Promise<AxiosResponse<void>> {
   });
 }
 
+export function quizSessionCreate(
+  quizId: number,
+  autoStartNum: number
+): Promise<AxiosResponse<{ sessionId: number }>> {
+  return request({
+    url: `/v1/admin/quiz/${quizId}/session/start`,
+    method: 'post',
+    data: { autoStartNum },
+  });
+}
+
+export function quizUpdateThumbnail(
+  quizId: number, 
+  imgUrl: string
+): Promise<AxiosResponse<void>> {
+  return request({
+    url: `/v1/admin/quiz/${quizId}/thumbnail`,
+    method: 'put',
+    data: { imgUrl },
+  });
+}
+
+export function quizSessionGetActivity(
+  quizId: number
+): Promise<AxiosResponse<{ sessions: Array<unknown> }>> {
+  return request({
+    url: `/v1/admin/quiz/${quizId}/sessions`,
+    method: 'get',
+  });
+}
+
+export function quizSessionUpdateState(
+  quizId: number,
+  sessionId: number,
+  action: string
+): Promise<AxiosResponse<void>> {
+  return request({
+    url: `/v1/admin/quiz/${quizId}/session/${sessionId}`,
+    method: 'put',
+    data: { action },
+  });
+}
+
+export function quizSessionGetStatus(
+  quizId: number,
+  sessionId: number
+): Promise<AxiosResponse<{ status: string }>> {
+  return request({
+    url: `/v1/admin/quiz/${quizId}/session/${sessionId}`,
+    method: 'get',
+  });
+}
+
+export function quizSessionGetFinalResult(
+  quizId: number,
+  sessionId: number
+): Promise<AxiosResponse<{ results: unknown }>> {
+  return request({
+    url: `/v1/admin/quiz/${quizId}/session/${sessionId}/results`,
+    method: 'get',
+  });
+}
+
+export function quizSessionGetFinalResultCsvFormat(
+  quizId: number,
+  sessionId: number
+): Promise<AxiosResponse<{ csv: string }>> {
+  return request({
+    url: `/v1/admin/quiz/${quizId}/session/${sessionId}/results/csv`,
+    method: 'get',
+  });
+}
+
+
+
+
+export function playerJoinSession(
+  sessionId: number,
+  name: string
+): Promise<AxiosResponse<{ playerId: number }>> {
+  return request({
+    url: '/v1/player/join',
+    method: 'post',
+    data: { sessionId, name },
+  });
+}
+
+export function playerGetStatusInSession(
+  playerId: number
+): Promise<AxiosResponse<{ status: string }>> {
+  return request({
+    url: `/v1/player/${playerId}`,
+    method: 'get',
+  });
+}
+
+export function playerGetQuestionInfo(
+  playerId: number, 
+  questionPosition: number
+): Promise<AxiosResponse<{ question: string }>> {
+  return request({
+    url: `/v1/player/${playerId}/question/${questionPosition}`,
+    method: 'get',
+  });
+}
+
+export function playerSubmitAnswer(
+  answerIds: Record<string, unknown>,
+  playerId: number,
+  questionPosition: number
+): Promise<AxiosResponse<void>> {
+  return request({
+    url: `/v1/player/${playerId}/question/${questionPosition}/answer`,
+    method: 'put',
+    data: { answerIds },
+  });
+}
+
+export function playerGetQuestionResult(
+  playerId: number,
+  questionPosition: number
+): Promise<AxiosResponse<{ results: unknown }>> {
+  return request({
+    url: `/v1/player/${playerId}/question/${questionPosition}/results`,
+    method: 'get',
+  });
+}
+
+export function playerGetSessionResult(
+  playerId: number
+): Promise<AxiosResponse<{ results: unknown }>> {
+  return request({
+    url: `/v1/player/${playerId}/results`,
+    method: 'get',
+  });
+}
+
+export function playerGetMessage(
+  playerId: number
+): Promise<AxiosResponse<{ messages: unknown[] }>> {
+  return request({
+    url: `/v1/player/${playerId}/chat`,
+    method: 'get',
+  });
+}
+
+export function playerPostMessage(
+  playerId: number,
+  message: Record<string, unknown>
+): Promise<AxiosResponse<void>> {
+  return request({
+    url: `/v1/player/${playerId}/chat`,
+    method: 'post',
+    data: { message },
+  });
+}
+
