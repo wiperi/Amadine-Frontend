@@ -1,10 +1,10 @@
 import { useContext, useEffect, useReducer } from "react";
 import { useState } from "react";
 import ProgressBar from "./ProgressBar";
-import { ViewContext } from "./QuizSession";
+import { StateContext } from "./QuizSession";
 
 const QuestionOpen: React.FC = () => {
-  const { setView } = useContext(ViewContext);
+  const { atQuestion } = useContext(StateContext);
 
   const growDuration = 3; // Duration to grow from 0 to 100
   const shrinkDuration = 5; // Duration to shrink from 100 to 0
@@ -38,7 +38,6 @@ const QuestionOpen: React.FC = () => {
         if (newProgress <= 0) {
           clearInterval(interval);
           setProgress(0);
-          setView('ANSWER_SHOW');
         }
       }
     }, 16); // ~60fps for smooth animation
@@ -57,7 +56,7 @@ const QuestionOpen: React.FC = () => {
       </div>
 
       <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 ${display ? 'opacity-100' : 'opacity-0'} transition-opacity duration-500 ease-in-out`}>
-        {['London', 'Paris', 'Berlin', 'Madrid', 'Madrid', 'Madrid'].map((city) => (
+        {['London', 'Paris', 'Berlin', 'Madrid'].map((city) => (
           <button key={city} className="bg-slate-700 hover:bg-slate-600 text-white text-xl font-semibold rounded-lg p-6">
             {city}
           </button>

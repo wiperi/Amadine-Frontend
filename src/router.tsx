@@ -54,7 +54,7 @@ export const router = createBrowserRouter([
     element: suspenseWrapper(<Login />),
   },
   {
-    path: 'quiz-session/:id',
+    path: 'quiz-session/:sessionId',
     element: suspenseWrapper(<QuizSession />),
   },
   {

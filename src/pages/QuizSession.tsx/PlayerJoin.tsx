@@ -1,7 +1,6 @@
 import { playerJoinSession } from '@/apis/quiz';
 import { catchAxiosError } from '@/utils/helpers';
-import { Form, Input, Button, message } from 'antd';
-import { AxiosError } from 'axios';
+import { Form, Input, Button } from 'antd';
 
 type PlayerJoinFormValues = {
   sessionId: string;

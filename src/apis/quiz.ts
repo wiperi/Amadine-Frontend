@@ -159,7 +159,7 @@ export function quizSessionUpdateState(
 export function quizSessionGetStatus(
   quizId: number,
   sessionId: number
-): Promise<AxiosResponse<{ status: string }>> {
+): Promise<AxiosResponse<{ state: string }>> {
   return request({
     url: `/v1/admin/quiz/${quizId}/session/${sessionId}`,
     method: 'get',
@@ -202,7 +202,7 @@ export function playerJoinSession(
 
 export function playerGetStatusInSession(
   playerId: number
-): Promise<AxiosResponse<{ status: string }>> {
+): Promise<AxiosResponse<{ state: string, numQuestions: number, atQuestion: number }>> {
   return request({
     url: `/v1/player/${playerId}`,
     method: 'get',

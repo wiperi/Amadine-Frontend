@@ -1,15 +1,35 @@
-import { useParams } from 'react-router-dom';
 import '@/styles/global.css';
 import { Avatar, message } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 import { useContext, useState } from 'react';
-import { ViewContext } from './QuizSession';
+import { StateContext } from './QuizSession';
+import ControlBar from './ControlBar';
+import { catchAxiosError } from '@/utils/helpers';
+import { quizSessionUpdateState } from '@/apis/quiz';
+import { PlayerAction as A } from '@/types/Enums';
 
 const Lobby: React.FC = () => {
-  const { id } = useParams();
+  const { sessionId, quizId } = useContext(StateContext);
   const [countdown, setCountdown] = useState<number>(-1);
+  const isAdmin = quizId !== -1;
 
-  const { setView } = useContext(ViewContext);
+  const onStartGame = () => {
+    // Display a huge countdown on the middle of the screen
+    setCountdown(3);
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          console.log('Starting game');
+          catchAxiosError(async () => {
+            await quizSessionUpdateState(quizId, sessionId, A.NEXT_QUESTION);
+          });
+          return -1;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
 
   return (
     <div className="min-h-screen w-full bg-slate-800 text-white">
@@ -24,30 +44,7 @@ const Lobby: React.FC = () => {
 
       <div className="flex flex-col gap-8 p-8">
         {/* Control Bar */}
-        <div className="flex gap-4 rounded-lg bg-slate-700 p-4">
-          <button
-            className="rounded bg-blue-500 px-4 py-2 hover:bg-blue-600"
-            onClick={() => {
-              // Display a huge countdown on the middle of the screen
-              setCountdown(3);
-              const interval = setInterval(() => {
-                setCountdown((prev) => {
-                  if (prev <= 1) {
-                    clearInterval(interval);
-                    // Set the view to question countdown
-                    setView('QUESTION_COUNTDOWN');
-                    return -1;
-                  }
-                  return prev - 1;
-                });
-              }, 1000);
-            }}
-          >
-            Start Game
-          </button>
-          <button className="rounded bg-gray-500 px-4 py-2 hover:bg-gray-600">Settings</button>
-          <button className="rounded bg-red-500 px-4 py-2 hover:bg-red-600">Leave</button>
-        </div>
+        {isAdmin && <ControlBar onStartGame={onStartGame} />}
 
         {/* Information Panel */}
         <div className="flex items-center gap-4 rounded-lg bg-slate-700 p-6">
@@ -55,11 +52,11 @@ const Lobby: React.FC = () => {
           <p
             className="flex-1 cursor-pointer text-gray-300 hover:opacity-80"
             onClick={() => {
-              navigator.clipboard.writeText(id || '');
+              navigator.clipboard.writeText(String(sessionId));
               message.success('Copied to clipboard');
             }}
           >
-            Session ID: {id} <CopyOutlined />
+            Session ID: {sessionId} <CopyOutlined />
           </p>
           <p className="text-gray-300">10/12 to Start</p>
         </div>

@@ -57,7 +57,7 @@ const QuizCard: React.FC<{ quiz: Quiz; onClick: () => void }> = ({ quiz, onClick
               const {
                 data: { sessionId },
               } = await quizSessionCreate(quiz.quizId, parseInt(startNum));
-              window.open(`/quiz-session/${sessionId}`, '_blank');
+              window.open(`/quiz-session/${sessionId}?quizId=${quiz.quizId}`, '_blank');
             });
           }}
         >
