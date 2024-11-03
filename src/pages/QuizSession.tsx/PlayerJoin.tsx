@@ -1,10 +1,24 @@
-import { Form, Input, Button } from 'antd';
+import { playerJoinSession } from '@/apis/quiz';
+import { catchAxiosError } from '@/utils/helpers';
+import { Form, Input, Button, message } from 'antd';
+import { AxiosError } from 'axios';
+
+type PlayerJoinFormValues = {
+  sessionId: string;
+  playerName: string;
+};
 
 const PlayerJoin: React.FC = () => {
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<PlayerJoinFormValues>();
 
-  const onFinish = (values: any) => {
+  const onFinish = async (values: PlayerJoinFormValues) => {
     console.log('Form values:', values);
+    catchAxiosError(async () => {
+      const {
+        data: { playerId },
+      } = await playerJoinSession(parseInt(values.sessionId), values.playerName);
+      window.location.href = `/quiz-session/${values.sessionId}?playerId=${playerId}`;
+    });
   };
 
   return (
@@ -13,7 +27,12 @@ const PlayerJoin: React.FC = () => {
         <h1 className="text-center text-3xl font-bold">Join Quiz Session</h1>
 
         <div className="mx-auto w-full md:w-1/2">
-          <Form form={form} onFinish={onFinish} layout="vertical" className="flex flex-col gap-4">
+          <Form<PlayerJoinFormValues>
+            form={form}
+            onFinish={onFinish}
+            layout="vertical"
+            className="flex flex-col gap-4"
+          >
             <Form.Item
               name="sessionId"
               rules={[{ required: true, message: 'Please input session ID!' }]}
