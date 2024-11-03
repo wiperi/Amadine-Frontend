@@ -1,6 +1,8 @@
 import { Descriptions, DescriptionsProps } from 'antd';
 import { Quiz } from '../types/UserStore';
 import { Card, Button } from 'antd';
+import { quizSessionCreate } from '@/apis/quiz';
+import { catchAxiosError } from '@/utils/helpers';
 
 const QuizDescription: React.FC<{ quiz: Quiz }> = ({ quiz }) => {
   const items: DescriptionsProps['items'] = [
@@ -44,10 +46,19 @@ const QuizCard: React.FC<{ quiz: Quiz; onClick: () => void }> = ({ quiz, onClick
         <Button
           className="absolute left-1/2 mt-4 w-[90%] -translate-x-1/2"
           type="primary"
-          onClick={(ev) => {
+          onClick={async (ev) => {
             ev.stopPropagation();
-            // open a new page
-            window.open(`/quiz-session/${quiz.quizId}`, '_blank');
+            catchAxiosError(async () => {
+              // prompt user to input start number
+              const startNum = prompt('Please input the auto start number');
+              if (!startNum) {
+                return;
+              }
+              const {
+                data: { sessionId },
+              } = await quizSessionCreate(quiz.quizId, parseInt(startNum));
+              window.open(`/quiz-session/${sessionId}`, '_blank');
+            });
           }}
         >
           Play
