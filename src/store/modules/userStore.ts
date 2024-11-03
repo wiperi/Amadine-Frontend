@@ -15,7 +15,7 @@ import {
 import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { getToken, setToken as _setToken } from '@/utils';
 import { Question, Quiz } from '@/types/UserStore';
-import { RootState } from '..';
+import { RootState } from '@/store';
 
 const userStore = createSlice({
   name: 'user',
