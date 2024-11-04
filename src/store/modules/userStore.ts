@@ -230,7 +230,10 @@ export function fetchEditQuiz(quizId: number, name: string, description: string)
           points: q.points,
           answers: q.answers.map((a) => ({ answer: a.answer, correct: a.correct })),
         };
-        await questionUpdate(quizId, q.questionId, questionBody);
+        await questionUpdate(quizId, q.questionId, questionBody)
+          .catch(async () => {
+            await questionCreate(quizId, questionBody);
+          });
       }
 
       const { data: newQuiz } = await quizInfo(quizId);
