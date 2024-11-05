@@ -16,29 +16,32 @@ type StateContextType = {
   sessionId: number;
   playerId: number;
   quizId: number;
+  autoStartNum: number;
+  players: string[];
 };
 
 export const StateContext = createContext<StateContextType>({
   state: S.LOBBY,
-  numQuestions: 0,
-  atQuestion: 0,
-  sessionId: 0,
-  playerId: 0,
-  quizId: 0,
+  numQuestions: -1,
+  atQuestion: -1,
+  sessionId: -1,
+  playerId: -1,
+  quizId: -1,
+  autoStartNum: -1,
+  players: [],
 });
 
 const QuizSession: React.FC = () => {
   const [state, setState] = useState<S>(S.LOBBY);
   const [numQuestions, setNumQuestions] = useState<number>(0);
   const [atQuestion, setAtQuestion] = useState<number>(0);
+  const [players, setPlayers] = useState<string[]>([]);
 
   const sessionId = parseInt(useParams().sessionId || '-1');
   const [searchParams] = useSearchParams();
   const playerId = parseInt(searchParams.get('playerId') || '-1');
   const quizId = parseInt(searchParams.get('quizId') || '-1');
-  console.log('sessionId', sessionId);
-  console.log('playerId', playerId);
-  console.log('quizId', quizId);
+  const autoStartNum = parseInt(searchParams.get('autoStartNum') || '-1');
 
   useEffect(() => {
     console.log('useEffect');
@@ -47,11 +50,14 @@ const QuizSession: React.FC = () => {
         if (quizId !== -1) {
           // Admin side
           const {
-            data: { state: newState },
+            data: { state: newState, players: newPlayers },
           } = await quizSessionGetStatus(quizId, sessionId);
           console.log('newState', newState);
           if (newState !== state) {
             setState(newState as S);
+          }
+          if (newPlayers !== players) {
+            setPlayers(newPlayers);
           }
         } else {
           // Player side
@@ -74,8 +80,8 @@ const QuizSession: React.FC = () => {
     };
 
     const intervalId = setInterval(fetchStatus, 1500);
-    return () => clearInterval(intervalId); // 清理函数
-  }, [quizId, sessionId, playerId, state, numQuestions, atQuestion]);
+    return () => clearInterval(intervalId);
+  }, []);
 
   // Cache context value using useMemo, avoiding unnecessary re-renders of every sub-component
   const contextValue = useMemo(
@@ -86,19 +92,21 @@ const QuizSession: React.FC = () => {
       sessionId,
       playerId,
       quizId,
+      autoStartNum,
+      players,
     }),
-    [state, numQuestions, atQuestion, sessionId, playerId, quizId]
+    [state, numQuestions, atQuestion, sessionId, playerId, quizId, autoStartNum, players]
   );
 
   return (
     <StateContext.Provider value={contextValue}>
-      <div>
+      <div className="min-h-screen w-full bg-slate-800 text-white">
         {state === S.LOBBY && <Lobby />}
-        {[S.QUESTION_OPEN, S.QUESTION_OPEN].includes(state) && <QuestionOpen />}
+        {(state === S.QUESTION_OPEN || state === S.QUESTION_COUNTDOWN) && <QuestionOpen />}
         {state === S.QUESTION_CLOSE && <QuestionClose />}
         {state === S.ANSWER_SHOW && <AnswerShow />}
         {state === S.FINAL_RESULTS && <FinalResult />}
-        {state === S.END && <div>End</div>}
+        {state === S.END && <div className="h-screen flex justify-center items-center text-center text-5xl font-bold">End</div>}
       </div>
     </StateContext.Provider>
   );

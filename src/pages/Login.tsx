@@ -25,7 +25,7 @@ const Login: React.FC = () => {
     try {
       await dispatch(fetchLoginApi(values.email as string, values.password as string));
       message.success('Login successful');
-      navigate('/');
+      navigate('/home');
     } catch (error) {
       console.log(error);
       if (error instanceof AxiosError) {

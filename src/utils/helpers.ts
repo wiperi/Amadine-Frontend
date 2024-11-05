@@ -6,12 +6,12 @@ export async function catchAxiosError(fn: (...args: any[]) => unknown) {
     await fn();
   } catch (error) {
     if (error instanceof AxiosError) {
-      message.error(error.response?.data?.error || 'Internal server error');
+      return message.error(error.response?.data?.error || 'Internal server error');
     }
     if (error instanceof Error) {
-      message.error(error.message);
-    } else {
-      message.error('An unknown error occurred');
+      return message.error(error.message);
     }
+    
+    return message.error('An unknown error occurred');
   }
 }

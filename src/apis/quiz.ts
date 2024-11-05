@@ -31,10 +31,7 @@ export function quizCreate(name: string, description: string): Promise<AxiosResp
   });
 }
 
-export function quizUpdateName(
-  quizId: number,
-  name: string
-): Promise<AxiosResponse<Quiz>> {
+export function quizUpdateName(quizId: number, name: string): Promise<AxiosResponse<Quiz>> {
   return request({
     url: `/v1/admin/quiz/${quizId}/name`,
     method: 'put',
@@ -92,7 +89,20 @@ export function questionUpdate(
   });
 }
 
-export function quizGetTrash(): Promise<AxiosResponse<{ quizzes: Pick<Quiz, 'quizId' | 'name'>[] }>> {
+export function questionDelete(
+  quizId: number,
+  questionId: number
+): Promise<AxiosResponse<Record<string, never>>> {
+  return request({
+    method: 'delete',
+    url: `/v1/admin/quiz/${quizId}/question/${questionId}`,
+  });
+}
+
+
+export function quizGetTrash(): Promise<
+  AxiosResponse<{ quizzes: Pick<Quiz, 'quizId' | 'name'>[] }>
+> {
   return request({
     url: '/v1/admin/quiz/trash',
     method: 'get',
@@ -124,10 +134,7 @@ export function quizSessionCreate(
   });
 }
 
-export function quizUpdateThumbnail(
-  quizId: number, 
-  imgUrl: string
-): Promise<AxiosResponse<void>> {
+export function quizUpdateThumbnail(quizId: number, imgUrl: string): Promise<AxiosResponse<void>> {
   return request({
     url: `/v1/admin/quiz/${quizId}/thumbnail`,
     method: 'put',
@@ -159,7 +166,7 @@ export function quizSessionUpdateState(
 export function quizSessionGetStatus(
   quizId: number,
   sessionId: number
-): Promise<AxiosResponse<{ state: string }>> {
+): Promise<AxiosResponse<{ state: string; players: string[]; metadata: any }>> {
   return request({
     url: `/v1/admin/quiz/${quizId}/session/${sessionId}`,
     method: 'get',
@@ -186,9 +193,6 @@ export function quizSessionGetFinalResultCsvFormat(
   });
 }
 
-
-
-
 export function playerJoinSession(
   sessionId: number,
   name: string
@@ -202,7 +206,7 @@ export function playerJoinSession(
 
 export function playerGetStatusInSession(
   playerId: number
-): Promise<AxiosResponse<{ state: string, numQuestions: number, atQuestion: number }>> {
+): Promise<AxiosResponse<{ state: string; numQuestions: number; atQuestion: number }>> {
   return request({
     url: `/v1/player/${playerId}`,
     method: 'get',
@@ -210,9 +214,21 @@ export function playerGetStatusInSession(
 }
 
 export function playerGetQuestionInfo(
-  playerId: number, 
+  playerId: number,
   questionPosition: number
-): Promise<AxiosResponse<{ question: string }>> {
+): Promise<
+  AxiosResponse<{
+    questionId: number;
+    question: string;
+    duration: number;
+    thumbnailUrl: string;
+    points: number;
+    answers: Pick<
+      { answerId: number; answer: string; colour: string },
+      'answerId' | 'answer' | 'colour'
+    >[];
+  }>
+> {
   return request({
     url: `/v1/player/${playerId}/question/${questionPosition}`,
     method: 'get',
@@ -269,4 +285,3 @@ export function playerPostMessage(
     data: { message },
   });
 }
-

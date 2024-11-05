@@ -1,10 +1,16 @@
-import { Avatar } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import { Avatar } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
+import { useContext } from 'react';
+import { StateContext } from './QuizSession';
+import ControlBar from './ControlBar';
 
 const FinalResult: React.FC = () => {
+  const { players, quizId } = useContext(StateContext);
+
   return (
     <div className="min-h-screen w-full bg-slate-800 text-white">
       <div className="flex min-h-screen flex-col justify-center gap-8 p-8">
+        {quizId !== -1 && <ControlBar />}
         <h1 className="text-center text-5xl font-bold">Final Result</h1>
         <h1 className="text-center text-3xl font-bold">Top Players</h1>
 

@@ -1,9 +1,15 @@
+import { useContext } from "react";
 import { PlayerList } from "./Lobby";
+import { StateContext } from "./QuizSession";
+import ControlBar from "./ControlBar";
 
 const AnswerShow: React.FC = () => {
+  const { players, quizId } = useContext(StateContext);
+
   return (
     <div className="min-h-screen w-full bg-slate-800 text-white">
       <div className="flex min-h-screen flex-col justify-center gap-8 p-8">
+        {quizId !== -1 && <ControlBar />}
         <h1 className="text-center text-5xl font-bold">What is the capital of France?</h1>
 
         <div className="flex gap-4">
@@ -18,7 +24,7 @@ const AnswerShow: React.FC = () => {
         </div>
 
         <h1 className="text-3xl font-bold">Correct Players</h1>
-        <PlayerList />
+        <PlayerList players={players} />
       </div>
     </div>
   );

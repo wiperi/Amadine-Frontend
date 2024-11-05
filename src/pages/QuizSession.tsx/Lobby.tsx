@@ -9,7 +9,7 @@ import { quizSessionUpdateState } from '@/apis/quiz';
 import { PlayerAction as A } from '@/types/Enums';
 
 const Lobby: React.FC = () => {
-  const { sessionId, quizId } = useContext(StateContext);
+  const { sessionId, quizId, autoStartNum, players } = useContext(StateContext);
   const [countdown, setCountdown] = useState<number>(-1);
   const isAdmin = quizId !== -1;
 
@@ -58,21 +58,21 @@ const Lobby: React.FC = () => {
           >
             Session ID: {sessionId} <CopyOutlined />
           </p>
-          <p className="text-gray-300">10/12 to Start</p>
+          <p className="text-gray-300">{players.length}/{autoStartNum} to Start</p>
         </div>
 
         <h1 className="text-3xl font-bold">Players</h1>
 
-        <PlayerList />
+        <PlayerList players={players} />
       </div>
     </div>
   );
 };
 
-export const PlayerList: React.FC = () => {
+export const PlayerList: React.FC<{ players: string[] }> = ({ players }) => {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((player) => (
+      {players.map((player) => (
         <div
           key={player}
           className="flex h-32 items-center justify-center gap-4 rounded-lg bg-slate-700"
