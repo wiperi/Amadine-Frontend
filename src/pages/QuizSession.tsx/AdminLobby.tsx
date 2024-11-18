@@ -1,17 +1,11 @@
-import { useState, createContext, useMemo, useEffect } from 'react';
-import Lobby from './Lobby';
-import QuestionOpen from './QuestionOpen';
-import AnswerShow from './AnswerShow';
-import FinalResult from './FinalResult';
-import { playerGetStatusInSession, quizSessionGetStatus } from '@/apis/quiz';
+import { useState, useEffect } from 'react';
+import { quizSessionGetStatus } from '@/apis/quiz';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { catchAxiosError } from '@/utils/helpers';
-import QuestionClose from './QuestionClose';
 import { QuizSessionState as S } from '@/types/Enums';
 import { message } from 'antd';
-import ControlBar from './ControlBar';
 import { CopyOutlined } from '@ant-design/icons';
-import { PlayerList } from './Lobby';
+import { PlayerList } from './PlayerList';
 import { QuizReturnedV2 } from '@/types/ApiReturnType';
 import ControlBarV2 from './ControlBarV2';
 

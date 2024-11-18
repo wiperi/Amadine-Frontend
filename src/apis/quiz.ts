@@ -1,4 +1,5 @@
-import { QuizSessionStatusReturned } from '@/types/ApiReturnType';
+import { PlayerGetQuestionInfoReturned, QuizSessionStatusAdminReturned, QuizSessionStatusPlayerReturned } from '@/types/ApiReturnType';
+import { QuizSessionState } from '@/types/Enums';
 import { Quiz } from '@/types/UserStore';
 import { request } from '@/utils';
 import { AxiosResponse } from 'axios';
@@ -167,7 +168,7 @@ export function quizSessionUpdateState(
 export function quizSessionGetStatus(
   quizId: number,
   sessionId: number
-): Promise<AxiosResponse<QuizSessionStatusReturned>> {
+): Promise<AxiosResponse<QuizSessionStatusAdminReturned>> {
   return request({
     url: `/v1/admin/quiz/${quizId}/session/${sessionId}`,
     method: 'get',
@@ -207,7 +208,7 @@ export function playerJoinSession(
 
 export function playerGetStatusInSession(
   playerId: number
-): Promise<AxiosResponse<{ state: string; numQuestions: number; atQuestion: number }>> {
+): Promise<AxiosResponse<QuizSessionStatusPlayerReturned>> {
   return request({
     url: `/v1/player/${playerId}`,
     method: 'get',
@@ -217,19 +218,7 @@ export function playerGetStatusInSession(
 export function playerGetQuestionInfo(
   playerId: number,
   questionPosition: number
-): Promise<
-  AxiosResponse<{
-    questionId: number;
-    question: string;
-    duration: number;
-    thumbnailUrl: string;
-    points: number;
-    answers: Pick<
-      { answerId: number; answer: string; colour: string },
-      'answerId' | 'answer' | 'colour'
-    >[];
-  }>
-> {
+): Promise<AxiosResponse<PlayerGetQuestionInfoReturned>> {
   return request({
     url: `/v1/player/${playerId}/question/${questionPosition}`,
     method: 'get',

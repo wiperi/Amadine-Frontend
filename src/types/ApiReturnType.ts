@@ -83,10 +83,29 @@ export type MessageParam = {
 };
 
 
-export type QuizSessionStatusReturned = {
+export type QuizSessionStatusAdminReturned = {
   state: QuizSessionState;
   players: string[];
   atQuestion: number;
   metadata: QuizReturnedV2
 };
+
+export type QuizSessionStatusPlayerReturned = {
+  state: QuizSessionState;
+  numQuestions: number;
+  atQuestion: number;
+};
+
+export type PlayerGetQuestionInfoReturned = {
+  questionId: number;
+  question: string;
+  duration: number;
+  thumbnailUrl: string;
+  points: number;
+  answers: {
+    answerId: number;
+    answer: string;
+    colour: string;
+  }[];
+}
 

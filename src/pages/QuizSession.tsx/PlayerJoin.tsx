@@ -16,7 +16,7 @@ const PlayerJoin: React.FC = () => {
       const {
         data: { playerId },
       } = await playerJoinSession(parseInt(values.sessionId), values.playerName);
-      window.location.href = `/quiz-session/player/${values.sessionId}?playerId=${playerId}`;
+      window.location.href = `/quiz-session/${values.sessionId}/player?playerId=${playerId}`;
     });
   };
 

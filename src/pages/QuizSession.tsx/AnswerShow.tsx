@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { PlayerList } from "./Lobby";
+import { PlayerList } from "./PlayerList";
 import { StateContext } from "./QuizSession";
 import ControlBar from "./ControlBar";
 
