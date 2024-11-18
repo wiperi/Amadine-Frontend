@@ -19,6 +19,7 @@ type StateContextType = {
   quizId: number;
   autoStartNum: number;
   players: string[];
+  question: PlayerGetQuestionInfoReturned | undefined;
 };
 
 export const StateContext = createContext<StateContextType>({
@@ -30,56 +31,63 @@ export const StateContext = createContext<StateContextType>({
   quizId: -1,
   autoStartNum: -1,
   players: [],
+  question: undefined
 });
 
 const QuizSession: React.FC = () => {
   console.log('QuizSession loaded');
-  const [state, setState] = useState<S>(S.LOBBY);
-  const value = useMemo(() => ({ state, setState }), [state]);
-  const [numQuestions, setNumQuestions] = useState<number>(0);
-  const [atQuestion, setAtQuestion] = useState<number>(0);
-  const [players, setPlayers] = useState<string[]>([]);
-  const [question, setQuestion] = useState<PlayerGetQuestionInfoReturned>();
-  const sessionId = parseInt(useParams().sessionId || '-1');
+  // const [state, setState] = useState<S>(S.LOBBY);
+  // const value = useMemo(() => ({ state, setState }), [state]);
+  // const [numQuestions, setNumQuestions] = useState<number>(0);
+  // const [atQuestion, setAtQuestion] = useState<number>(0);
+  // const [players, setPlayers] = useState<string[]>([]);
+  // const [question, setQuestion] = useState<PlayerGetQuestionInfoReturned>();
+  // const sessionId = parseInt(useParams().sessionId || '-1');
   const [searchParams] = useSearchParams();
-  const playerId = parseInt(searchParams.get('playerId') || '-1');
-  const quizId = parseInt(searchParams.get('quizId') || '-1');
-  const autoStartNum = parseInt(searchParams.get('autoStartNum') || '-1');
+  // const playerId = parseInt(searchParams.get('playerId') || '-1');
+  // const quizId = parseInt(searchParams.get('quizId') || '-1');
+  // const autoStartNum = parseInt(searchParams.get('autoStartNum') || '-1');
+
+  // Cache context value using useMemo, avoiding unnecessary re-renders of every sub-component
+  let con = useMemo(
+    () => ({
+      state: S.LOBBY,
+      numQuestions: 0,
+      atQuestion: 0,
+      sessionId: -1,
+      playerId: parseInt(searchParams.get('playerId') || '-1'),
+      quizId: -1,
+      autoStartNum: -1,
+      players: [],
+      question: undefined
+    }),
+    []
+  );
+
+  const [state, setState] = useState<S>(con.state);
 
   const fetchStatus = async () => {
     await catchAxiosError(async () => {
       // Player side
       const {
         data: { state: newState, numQuestions: newNumQuestions, atQuestion: newAtQuestion },
-      } = await playerGetStatusInSession(playerId);
-      
-      if (newState !== state && newState === S.QUESTION_COUNTDOWN) {
-        console.log('fetchQuestionInfo');
-      }
-      
-      if (newState !== state) {
-        console.log(`${state} -> ${newState}`);
+      } = await playerGetStatusInSession(con.playerId);
+
+      if (newState !== con.state) {
+        console.log(`${con.state} -> ${newState}`);
+        con.state = newState;
         setState(newState);
       }
-      if (newNumQuestions !== numQuestions) {
-        setNumQuestions(newNumQuestions);
+      if (newNumQuestions !== con.numQuestions) {
+        con.numQuestions = newNumQuestions;
       }
-      if (newAtQuestion !== atQuestion) {
-        setAtQuestion(newAtQuestion);
+      if (newAtQuestion !== con.atQuestion) {
+        con.atQuestion = newAtQuestion;
       }
-
-      // fetchQuestionInfo();
     });
   };
 
-  const fetchQuestionInfo = async () => {
-    console.log('fetchQuestionInfo');
-    await catchAxiosError(async () => {
-      const { data: question } = await playerGetQuestionInfo(playerId, atQuestion);
-      setQuestion(question);
-      console.log('question', question);
-    });
-  };
+
 
   useEffect(() => {
     console.log('useEffect');
@@ -88,31 +96,16 @@ const QuizSession: React.FC = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  // Cache context value using useMemo, avoiding unnecessary re-renders of every sub-component
-  const contextValue = useMemo(
-    () => ({
-      state,
-      numQuestions,
-      atQuestion,
-      sessionId,
-      playerId,
-      quizId,
-      autoStartNum,
-      players,
-    }),
-    [state, numQuestions, atQuestion, sessionId, playerId, quizId, autoStartNum, players]
-  );
-
 
   return (
-    <StateContext.Provider value={contextValue}>
+    <StateContext.Provider value={con}>
       <div className="min-h-screen w-full bg-slate-800 text-white">
-        {state === S.LOBBY && <Lobby />}
-        {(state === S.QUESTION_OPEN || state === S.QUESTION_COUNTDOWN) && <QuestionOpen />}
-        {state === S.QUESTION_CLOSE && <QuestionClose />}
-        {state === S.ANSWER_SHOW && <AnswerShow />}
-        {state === S.FINAL_RESULTS && <FinalResult />}
-        {state === S.END && (
+        {con.state === S.LOBBY && <Lobby />}
+        {(con.state === S.QUESTION_OPEN || con.state === S.QUESTION_COUNTDOWN) && <QuestionOpen />}
+        {con.state === S.QUESTION_CLOSE && <QuestionClose />}
+        {con.state === S.ANSWER_SHOW && <AnswerShow />}
+        {con.state === S.FINAL_RESULTS && <FinalResult />}
+        {con.state === S.END && (
           <div className="flex h-screen items-center justify-center text-center text-5xl font-bold">
             End
           </div>

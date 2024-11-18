@@ -9,7 +9,7 @@ import { catchAxiosError } from '@/utils/helpers';
 import { Question } from '@/types/UserStore';
 
 const QuestionOpen: React.FC = () => {
-  const { state, atQuestion, playerId, quizId } = useContext(StateContext);
+  const { state, atQuestion, playerId } = useContext(StateContext);
 
   // Get question
   const [question, setQuestion] = useState<Question | undefined>(undefined);
@@ -24,33 +24,32 @@ const QuestionOpen: React.FC = () => {
 
   // Progress bar
   const growDuration = 3; // Duration to grow from 0 to 100
-  const shrinkDuration = question?.duration || 10; // Duration to shrink from 100 to 0
+  // const shrinkDuration = question?.duration || 10; // Duration to shrink from 100 to 0
   const [progress, setProgress] = useState<number>(0);
   const [answerDisplay, setAnswerDisplay] = useState(false);
   const [barColor, setBarColor] = useState<'blue' | 'green'>('blue');
 
   useEffect(() => {
     let startTime = Date.now();
-    let isGrowing = true;
 
     const interval = setInterval(() => {
       const elapsedTime = Date.now() - startTime;
 
-      if (isGrowing) {
+      if (!question) {
         // Growing phase
         const newProgress = Math.min(100, (elapsedTime / (growDuration * 1000)) * 100);
         setProgress(newProgress);
 
         if (newProgress >= 100) {
-          isGrowing = false;
+          clearInterval(interval);
           startTime = Date.now();
+          setBarColor('green');
           setAnswerDisplay(true);
         }
       } else {
         // Shrinking phase
-        const newProgress = Math.max(0, 100 * (1 - elapsedTime / (shrinkDuration * 1000)));
+        const newProgress = Math.max(0, 100 * (1 - elapsedTime / (question.duration * 1000)));
         setProgress(newProgress);
-        setBarColor('green');
 
         if (newProgress <= 0) {
           clearInterval(interval);
@@ -60,14 +59,12 @@ const QuestionOpen: React.FC = () => {
     }, 16); // ~60fps for smooth animation
 
     return () => clearInterval(interval);
-  }, []);
+  }, [question]);
 
   return (
     <div className="min-h-screen w-full bg-slate-800 text-white">
       <div className="flex min-h-screen flex-col justify-center gap-8 p-8">
-        {quizId !== -1 && <ControlBar />}
-
-        <h1 className="text-center text-5xl font-bold">{question?.question}</h1>
+        <h1 className="text-center text-5xl font-bold">{barColor === 'blue' ? 'Next question is comming!' : question?.question}</h1>
 
         <div className="flex justify-center">
           <ProgressBar progress={progress} barColor={barColor} />
