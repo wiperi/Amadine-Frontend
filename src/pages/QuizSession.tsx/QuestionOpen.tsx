@@ -33,38 +33,33 @@ const QuestionOpen: React.FC = () => {
   useEffect(() => {
     let startTime = Date.now();
 
-    if (!question) {
+    let interval: NodeJS.Timeout;
 
-    } else {
-
-    }
-
-
-    const interval = setInterval(() => {
+    const grow = () => {
       const elapsedTime = Date.now() - startTime;
-
-      if (!question) {
-        // Growing phase
-        const newProgress = Math.min(100, (elapsedTime / (growDuration * 1000)) * 100);
-        setProgress(newProgress);
-
-        if (newProgress >= 100) {
-          clearInterval(interval);
-          startTime = Date.now();
-          setBarColor('green');
-          setAnswerDisplay(true);
-        }
-      } else {
-        // Shrinking phase
-        const newProgress = Math.max(0, 100 * (1 - elapsedTime / (question.duration * 1000)));
-        setProgress(newProgress);
-
-        if (newProgress <= 0) {
-          clearInterval(interval);
-          setProgress(0);
-        }
+      const newProgress = Math.min(100, (elapsedTime / (growDuration * 1000)) * 100);
+      setProgress(newProgress);
+      if (newProgress >= 100) {
+        clearInterval(interval);
       }
-    }, 16); // ~60fps for smooth animation
+    };
+
+    const shrink = () => {
+      const elapsedTime = Date.now() - startTime;
+      const newProgress = Math.max(0, 100 * (1 - elapsedTime / (question!.duration * 1000)));
+      setProgress(newProgress);
+      if (newProgress <= 0) {
+        clearInterval(interval);
+      }
+    };
+
+    if (!question) {
+      interval = setInterval(grow, 16);
+    } else {
+      setAnswerDisplay(true);
+      setBarColor('green');
+      interval = setInterval(shrink, 16);
+    }
 
     return () => clearInterval(interval);
   }, [question]);
@@ -101,9 +96,9 @@ const QuestionOpen: React.FC = () => {
                   selectedAnswerIds.add(a.answerId);
                   setSelectedAnswerIds(new Set(selectedAnswerIds));
                 }
-
+                
                 catchAxiosError(async () => {
-                  playerSubmitAnswer(Array.from(selectedAnswerIds), playerId, atQuestion);
+                  await playerSubmitAnswer(Array.from(selectedAnswerIds), playerId, atQuestion);
                 });
               }}
             >
