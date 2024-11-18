@@ -63,7 +63,7 @@ const QuizSession: React.FC = () => {
     }),
     []
   );
-
+  
   const [state, setState] = useState<S>(con.state);
 
   const fetchStatus = async () => {

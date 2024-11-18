@@ -3,10 +3,11 @@ import { useState } from 'react';
 import ProgressBar from './ProgressBar';
 import { StateContext } from './QuizSession';
 import ControlBar from './ControlBar';
-import { playerGetQuestionInfo } from '@/apis/quiz';
+import { playerGetQuestionInfo, playerSubmitAnswer } from '@/apis/quiz';
 import { QuizSessionState as S } from '@/types/Enums';
 import { catchAxiosError } from '@/utils/helpers';
 import { Question } from '@/types/UserStore';
+import { message } from 'antd';
 
 const QuestionOpen: React.FC = () => {
   const { state, atQuestion, playerId } = useContext(StateContext);
@@ -24,13 +25,20 @@ const QuestionOpen: React.FC = () => {
 
   // Progress bar
   const growDuration = 3; // Duration to grow from 0 to 100
-  // const shrinkDuration = question?.duration || 10; // Duration to shrink from 100 to 0
   const [progress, setProgress] = useState<number>(0);
   const [answerDisplay, setAnswerDisplay] = useState(false);
   const [barColor, setBarColor] = useState<'blue' | 'green'>('blue');
+  const [selectedAnswerIds, setSelectedAnswerIds] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     let startTime = Date.now();
+
+    if (!question) {
+
+    } else {
+
+    }
+
 
     const interval = setInterval(() => {
       const elapsedTime = Date.now() - startTime;
@@ -64,7 +72,9 @@ const QuestionOpen: React.FC = () => {
   return (
     <div className="min-h-screen w-full bg-slate-800 text-white">
       <div className="flex min-h-screen flex-col justify-center gap-8 p-8">
-        <h1 className="text-center text-5xl font-bold">{barColor === 'blue' ? 'Next question is comming!' : question?.question}</h1>
+        <h1 className="text-center text-5xl font-bold">
+          {barColor === 'blue' ? 'Next question is comming!' : question?.question}
+        </h1>
 
         <div className="flex justify-center">
           <ProgressBar progress={progress} barColor={barColor} />
@@ -76,7 +86,26 @@ const QuestionOpen: React.FC = () => {
           {question?.answers.map((a) => (
             <button
               key={a.answerId}
-              className="rounded-lg bg-slate-700 p-6 text-xl font-semibold text-white hover:bg-slate-600"
+              className={`rounded-lg ${selectedAnswerIds.has(a.answerId) ? 'bg-blue-500' : 'bg-slate-700'} p-6 text-xl font-semibold text-white hover:bg-blue-500`}
+              onClick={async () => {
+                if (selectedAnswerIds.has(a.answerId)) {
+                  // there should be at least one answer
+                  if (selectedAnswerIds.size === 1) {
+                    message.warning('You should at least select one answer');
+                    return;
+                  }
+
+                  selectedAnswerIds.delete(a.answerId);
+                  setSelectedAnswerIds(new Set(selectedAnswerIds));
+                } else {
+                  selectedAnswerIds.add(a.answerId);
+                  setSelectedAnswerIds(new Set(selectedAnswerIds));
+                }
+
+                catchAxiosError(async () => {
+                  playerSubmitAnswer(Array.from(selectedAnswerIds), playerId, atQuestion);
+                });
+              }}
             >
               {a.answer}
             </button>

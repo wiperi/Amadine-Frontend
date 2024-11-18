@@ -226,7 +226,7 @@ export function playerGetQuestionInfo(
 }
 
 export function playerSubmitAnswer(
-  answerIds: Record<string, unknown>,
+  answerIds: number[],
   playerId: number,
   questionPosition: number
 ): Promise<AxiosResponse<void>> {
