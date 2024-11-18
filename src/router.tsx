@@ -2,15 +2,14 @@ import TodoList from './pages/testPages/TodoList';
 import { Navigation } from './pages/testPages/Navigation';
 import { createBrowserRouter } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import PlayerLobby from './pages/QuizSession.tsx/PlayerLobby';
-import PlayerJoin from './pages/QuizSession.tsx/PlayerJoin';
 
+const PlayerLobby = lazy(() => import('./pages/QuizSession.tsx/PlayerLobby'));
+const PlayerJoin = lazy(() => import('./pages/QuizSession.tsx/PlayerJoin'));
 const AdminLobby = lazy(() => import('./pages/QuizSession.tsx/AdminLobby'));
 const DashBoard = lazy(() => import('./pages/DashBoard'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Login = lazy(() => import('./pages/Login'));
 const AuthRoute = lazy(() => import('./pages/AuthRoute'));
-const Home = lazy(() => import('./pages/Home'));
 const Quiz = lazy(() => import('./pages/Quiz'));
 const TrashBin = lazy(() => import('./pages/TrashBin'));
 
@@ -32,10 +31,6 @@ export const router = createBrowserRouter([
       </AuthRoute>
     ),
     children: [
-      {
-        path: 'home',
-        element: suspenseWrapper(<Home />),
-      },
       {
         path: 'quiz',
         element: suspenseWrapper(<Quiz />),

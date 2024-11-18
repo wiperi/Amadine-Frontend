@@ -18,12 +18,6 @@ const { Search } = Input;
 const DashBoard: React.FC = () => {
   const siderTabs = [
     {
-      key: '/home',
-      icon: <HomeOutlined />,
-      title: 'Home',
-      path: 'home',
-    },
-    {
       key: '/quiz',
       icon: <SearchOutlined />,
       title: 'Quiz',
