@@ -63,7 +63,7 @@ const QuizSession: React.FC = () => {
     }),
     []
   );
-  
+
   const [state, setState] = useState<S>(con.state);
 
   const fetchStatus = async () => {
@@ -107,7 +107,7 @@ const QuizSession: React.FC = () => {
         {con.state === S.FINAL_RESULTS && <FinalResult />}
         {con.state === S.END && (
           <div className="flex h-screen items-center justify-center text-center text-5xl font-bold">
-            End
+            Game Ended
           </div>
         )}
       </div>

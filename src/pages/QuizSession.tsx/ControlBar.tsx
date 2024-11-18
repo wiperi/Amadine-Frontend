@@ -1,13 +1,15 @@
-import { useContext } from 'react';
-import { StateContext } from './QuizSession';
 import { Button } from 'antd';
 import { QuizSessionState as S, PlayerAction as A } from '@/types/Enums';
 import { catchAxiosError } from '@/utils/helpers';
 import { quizSessionUpdateState } from '@/apis/quiz';
 
-const ControlBar: React.FC<{ onStartGame?: () => void }> = ({ onStartGame }) => {
-  const { state, quizId, sessionId } = useContext(StateContext);
+type ControlBarProps = {
+  state: S;
+  quizId: number;
+  sessionId: number;
+}
 
+const ControlBar: React.FC<ControlBarProps> = ({ state, quizId, sessionId }) => {
   const onEnd = () => {
     catchAxiosError(async () => {
       console.log('send: END');
@@ -36,21 +38,23 @@ const ControlBar: React.FC<{ onStartGame?: () => void }> = ({ onStartGame }) => 
     });
   };
 
+  const onGoToAnswer = () => {
+    catchAxiosError(async () => {
+      console.log('send: GO_TO_ANSWER');
+      await quizSessionUpdateState(quizId, sessionId, A.GO_TO_ANSWER);
+    });
+  };
+
   return (
     <div className="flex gap-4 rounded-lg bg-slate-700 p-4">
-      {state === S.LOBBY && (
-        <Button type="primary" onClick={onStartGame}>
-          Start Game
-        </Button>
-      )}
-      {[S.QUESTION_COUNTDOWN, S.QUESTION_CLOSE, S.ANSWER_SHOW].includes(state) && (
+      {[S.LOBBY, S.QUESTION_COUNTDOWN, S.QUESTION_CLOSE, S.ANSWER_SHOW].includes(state) && (
         <Button onClick={onNextQuestion}>Next Question</Button>
       )}
       {state === S.QUESTION_COUNTDOWN && <Button onClick={onSkipCountdown}>Skip Countdown</Button>}
       {[S.ANSWER_SHOW, S.QUESTION_CLOSE].includes(state) && (
         <Button onClick={onGoToFinalResults}>Go to Final Result</Button>
       )}
-      {[S.QUESTION_OPEN, S.QUESTION_CLOSE].includes(state) && <Button danger>Go to Answer</Button>}
+      {[S.QUESTION_OPEN, S.QUESTION_CLOSE].includes(state) && <Button onClick={onGoToAnswer}>Go to Answer</Button>}
       <Button onClick={onEnd}>End Quiz</Button>
     </div>
   );

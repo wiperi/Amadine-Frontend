@@ -109,3 +109,19 @@ export type PlayerGetQuestionInfoReturned = {
   }[];
 }
 
+export type PlayerGetQuestionResultReturned = {
+  questionId: number;
+  averageAnswerTime: number;
+  percentCorrect: number;
+  playersCorrectList: string[];
+};
+
+export type PlayerGetSessionResultReturned = {
+  usersRankedByScore: PlayerReturned[];
+  questionResults: {
+    questionId: number;
+    playersCorrectList: string[];
+    averageAnswerTime: number;
+    percentCorrect: number;
+  }[];
+};

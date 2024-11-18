@@ -7,7 +7,7 @@ import { message } from 'antd';
 import { CopyOutlined } from '@ant-design/icons';
 import { PlayerList } from './PlayerList';
 import { QuizReturnedV2 } from '@/types/ApiReturnType';
-import ControlBarV2 from './ControlBarV2';
+import ControlBar from './ControlBar';
 
 const AdminLobby: React.FC = () => {
 
@@ -47,7 +47,7 @@ const AdminLobby: React.FC = () => {
 
       <div className="flex flex-col gap-8 p-8">
         {/* Control Bar */}
-        <ControlBarV2 state={state} quizId={quizId} sessionId={sessionId} />
+        <ControlBar state={state} quizId={quizId} sessionId={sessionId} />
 
         {/* Quiz Name, Id, Player Count */}
         <div className="flex items-center gap-4 rounded-lg bg-slate-700 p-6">

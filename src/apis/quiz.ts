@@ -1,4 +1,4 @@
-import { PlayerGetQuestionInfoReturned, QuizSessionStatusAdminReturned, QuizSessionStatusPlayerReturned } from '@/types/ApiReturnType';
+import { PlayerGetQuestionInfoReturned, PlayerGetQuestionResultReturned, PlayerGetSessionResultReturned, QuizSessionStatusAdminReturned, QuizSessionStatusPlayerReturned } from '@/types/ApiReturnType';
 import { QuizSessionState } from '@/types/Enums';
 import { Quiz } from '@/types/UserStore';
 import { request } from '@/utils';
@@ -240,7 +240,7 @@ export function playerSubmitAnswer(
 export function playerGetQuestionResult(
   playerId: number,
   questionPosition: number
-): Promise<AxiosResponse<{ results: unknown }>> {
+): Promise<AxiosResponse<PlayerGetQuestionResultReturned>> {
   return request({
     url: `/v1/player/${playerId}/question/${questionPosition}/results`,
     method: 'get',
@@ -249,7 +249,7 @@ export function playerGetQuestionResult(
 
 export function playerGetSessionResult(
   playerId: number
-): Promise<AxiosResponse<{ results: unknown }>> {
+): Promise<AxiosResponse<PlayerGetSessionResultReturned>> {
   return request({
     url: `/v1/player/${playerId}/results`,
     method: 'get',
