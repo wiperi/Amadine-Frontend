@@ -1,14 +1,14 @@
 import { Avatar } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useContext, useEffect, useState } from 'react';
-import { StateContext } from './QuizSession';
+import { StateContext } from './PlayerLobby';
 import { catchAxiosError } from '@/utils/helpers';
 import { playerGetSessionResult } from '@/apis/quiz';
 import { PlayerGetSessionResultReturned } from '@/types/ApiReturnType';
 import { QuestionResult } from './AnswerShow';
 
 const FinalResult: React.FC = () => {
-  const { playerId, quizId } = useContext(StateContext);
+  const { playerId } = useContext(StateContext);
 
   const [results, setResults] = useState<PlayerGetSessionResultReturned | undefined>(undefined);
   useEffect(() => {

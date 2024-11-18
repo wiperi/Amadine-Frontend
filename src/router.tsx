@@ -2,7 +2,7 @@ import TodoList from './pages/testPages/TodoList';
 import { Navigation } from './pages/testPages/Navigation';
 import { createBrowserRouter } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import QuizSession from './pages/QuizSession.tsx/QuizSession';
+import PlayerLobby from './pages/QuizSession.tsx/PlayerLobby';
 import PlayerJoin from './pages/QuizSession.tsx/PlayerJoin';
 
 const AdminLobby = lazy(() => import('./pages/QuizSession.tsx/AdminLobby'));
@@ -60,7 +60,7 @@ export const router = createBrowserRouter([
   },
   {
     path: 'quiz-session/:sessionId/player',
-    element: suspenseWrapper(<QuizSession />),
+    element: suspenseWrapper(<PlayerLobby />),
   },
   {
     path: 'join',

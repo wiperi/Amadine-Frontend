@@ -1,10 +1,9 @@
 import { useState, createContext, useMemo, useEffect } from 'react';
-import Lobby from './Lobby';
 import QuestionOpen from './QuestionOpen';
 import AnswerShow from './AnswerShow';
 import FinalResult from './FinalResult';
-import { playerGetQuestionInfo, playerGetStatusInSession, quizSessionGetStatus } from '@/apis/quiz';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { playerGetStatusInSession } from '@/apis/quiz';
+import { useSearchParams } from 'react-router-dom';
 import { catchAxiosError } from '@/utils/helpers';
 import QuestionClose from './QuestionClose';
 import { QuizSessionState as S } from '@/types/Enums';
@@ -14,11 +13,7 @@ type StateContextType = {
   state: S;
   numQuestions: number;
   atQuestion: number;
-  sessionId: number;
   playerId: number;
-  quizId: number;
-  autoStartNum: number;
-  players: string[];
   question: PlayerGetQuestionInfoReturned | undefined;
 };
 
@@ -26,27 +21,13 @@ export const StateContext = createContext<StateContextType>({
   state: S.LOBBY,
   numQuestions: -1,
   atQuestion: -1,
-  sessionId: -1,
   playerId: -1,
-  quizId: -1,
-  autoStartNum: -1,
-  players: [],
-  question: undefined
+  question: undefined,
 });
 
-const QuizSession: React.FC = () => {
+const PlayerLobby: React.FC = () => {
   console.log('QuizSession loaded');
-  // const [state, setState] = useState<S>(S.LOBBY);
-  // const value = useMemo(() => ({ state, setState }), [state]);
-  // const [numQuestions, setNumQuestions] = useState<number>(0);
-  // const [atQuestion, setAtQuestion] = useState<number>(0);
-  // const [players, setPlayers] = useState<string[]>([]);
-  // const [question, setQuestion] = useState<PlayerGetQuestionInfoReturned>();
-  // const sessionId = parseInt(useParams().sessionId || '-1');
   const [searchParams] = useSearchParams();
-  // const playerId = parseInt(searchParams.get('playerId') || '-1');
-  // const quizId = parseInt(searchParams.get('quizId') || '-1');
-  // const autoStartNum = parseInt(searchParams.get('autoStartNum') || '-1');
 
   // Cache context value using useMemo, avoiding unnecessary re-renders of every sub-component
   let con = useMemo(
@@ -54,12 +35,8 @@ const QuizSession: React.FC = () => {
       state: S.LOBBY,
       numQuestions: 0,
       atQuestion: 0,
-      sessionId: -1,
       playerId: parseInt(searchParams.get('playerId') || '-1'),
-      quizId: -1,
-      autoStartNum: -1,
-      players: [],
-      question: undefined
+      question: undefined,
     }),
     []
   );
@@ -87,8 +64,6 @@ const QuizSession: React.FC = () => {
     });
   };
 
-
-
   useEffect(() => {
     console.log('useEffect');
 
@@ -96,11 +71,14 @@ const QuizSession: React.FC = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-
   return (
     <StateContext.Provider value={con}>
       <div className="min-h-screen w-full bg-slate-800 text-white">
-        {con.state === S.LOBBY && <Lobby />}
+        {con.state === S.LOBBY && (
+          <h1 className="absolute inset-0 flex items-center justify-center text-center text-5xl font-bold">
+            Waiting for game to start...
+          </h1>
+        )}
         {(con.state === S.QUESTION_OPEN || con.state === S.QUESTION_COUNTDOWN) && <QuestionOpen />}
         {con.state === S.QUESTION_CLOSE && <QuestionClose />}
         {con.state === S.ANSWER_SHOW && <AnswerShow />}
@@ -115,4 +93,4 @@ const QuizSession: React.FC = () => {
   );
 };
 
-export default QuizSession;
+export default PlayerLobby;

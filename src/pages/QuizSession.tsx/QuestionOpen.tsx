@@ -1,7 +1,7 @@
 import { useContext, useEffect, useReducer } from 'react';
 import { useState } from 'react';
 import ProgressBar from './ProgressBar';
-import { StateContext } from './QuizSession';
+import { StateContext } from './PlayerLobby';
 import { playerGetQuestionInfo, playerSubmitAnswer } from '@/apis/quiz';
 import { QuizSessionState as S } from '@/types/Enums';
 import { catchAxiosError } from '@/utils/helpers';

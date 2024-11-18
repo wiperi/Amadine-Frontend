@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { PlayerList } from './PlayerList';
-import { StateContext } from './QuizSession';
+import { StateContext } from './PlayerLobby';
 import { catchAxiosError } from '@/utils/helpers';
 import { playerGetQuestionResult } from '@/apis/quiz';
 import { PlayerGetQuestionResultReturned } from '@/types/ApiReturnType';

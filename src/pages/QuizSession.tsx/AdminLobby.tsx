@@ -10,7 +10,6 @@ import { QuizReturnedV2 } from '@/types/ApiReturnType';
 import ControlBar from './ControlBar';
 
 const AdminLobby: React.FC = () => {
-
   const [state, setState] = useState<S>(S.LOBBY);
   const [players, setPlayers] = useState<string[]>([]);
   const sessionId = parseInt(useParams().sessionId || '-1');
@@ -43,12 +42,19 @@ const AdminLobby: React.FC = () => {
 
   return (
     <div className="min-h-screen w-full bg-slate-800 text-white">
-
-
-      <div className="flex flex-col gap-8 p-8">
+      <div className="flex flex-col gap-4 p-4">
+        <h1 className="text-xl font-bold">Control Bar</h1>
         {/* Control Bar */}
         <ControlBar state={state} quizId={quizId} sessionId={sessionId} />
 
+        {/* Quiz State */}
+        <div className="flex items-center gap-4 rounded-lg bg-slate-700 p-6">
+          <h1 className="text-xl font-bold">
+            Current Game State: <span className="text-blue-300">{state}</span>
+          </h1>
+        </div>
+
+        <h1 className="text-xl font-bold">Game Information</h1>
         {/* Quiz Name, Id, Player Count */}
         <div className="flex items-center gap-4 rounded-lg bg-slate-700 p-6">
           <h1 className="text-2xl font-bold">{metadata?.name}</h1>
@@ -61,21 +67,33 @@ const AdminLobby: React.FC = () => {
           >
             Session ID: {sessionId} <CopyOutlined />
           </p>
-          <p className="text-gray-300">{players.length}/{autoStartNum} to Start</p>
+          <p className="text-gray-300">
+            {players.length}/{autoStartNum} to Start
+          </p>
         </div>
 
-        {/* Quiz State */}
+        {/* Join Game Link */}
         <div className="flex items-center gap-4 rounded-lg bg-slate-700 p-6">
-          <h1 className="text-xl font-bold">at {state}</h1>
+          <p className="text-xl font-bold">
+            Visit{' '}
+            <a
+              href={`${window.location.origin}/join`}
+              className="text-blue-500"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              amandine.tian77.me/join
+            </a>{' '}
+            to join the game!
+          </p>
         </div>
 
         {/* Players List */}
-        <h1 className="text-3xl font-bold">Players</h1>
+        <h1 className="text-xl font-bold">Players</h1>
         <PlayerList players={players} />
       </div>
     </div>
   );
-
 };
 
 export default AdminLobby;
