@@ -5,6 +5,7 @@ import { lazy, Suspense } from 'react';
 import QuizSession from './pages/QuizSession.tsx/QuizSession';
 import PlayerJoin from './pages/QuizSession.tsx/PlayerJoin';
 
+const AdminLobby = lazy(() => import('./pages/QuizSession.tsx/AdminLobby'));
 const DashBoard = lazy(() => import('./pages/DashBoard'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Login = lazy(() => import('./pages/Login'));
@@ -54,7 +55,11 @@ export const router = createBrowserRouter([
     element: suspenseWrapper(<Login />),
   },
   {
-    path: 'quiz-session/:sessionId',
+    path: 'quiz-session/:sessionId/admin',
+    element: suspenseWrapper(<AdminLobby />),
+  },
+  {
+    path: 'quiz-session/:sessionId/player',
     element: suspenseWrapper(<QuizSession />),
   },
   {

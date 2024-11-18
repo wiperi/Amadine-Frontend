@@ -1,3 +1,4 @@
+import { QuizSessionStatusReturned } from '@/types/ApiReturnType';
 import { Quiz } from '@/types/UserStore';
 import { request } from '@/utils';
 import { AxiosResponse } from 'axios';
@@ -166,7 +167,7 @@ export function quizSessionUpdateState(
 export function quizSessionGetStatus(
   quizId: number,
   sessionId: number
-): Promise<AxiosResponse<{ state: string; players: string[]; metadata: any }>> {
+): Promise<AxiosResponse<QuizSessionStatusReturned>> {
   return request({
     url: `/v1/admin/quiz/${quizId}/session/${sessionId}`,
     method: 'get',
