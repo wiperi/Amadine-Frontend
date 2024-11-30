@@ -11,6 +11,7 @@ import {
   quizUpdateDescription,
   quizUpdateName,
   questionUpdate,
+  questionDelete,
 } from '@/apis/quiz';
 import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
 import { getToken, setToken as _setToken } from '@/utils';
@@ -69,7 +70,14 @@ const userStore = createSlice({
           question: '',
           duration: 0,
           points: 0,
-          answers: [],
+          answers: [
+            {
+              answerId: 0,
+              answer: '',
+              colour: '',
+              correct: false,
+            },
+          ],
         },
       ],
     },
@@ -112,7 +120,12 @@ const userStore = createSlice({
   },
 });
 
-export function fetchRegisterApi(email: string, password: string, firstName: string, lastName: string) {
+export function fetchRegisterApi(
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string
+) {
   /**
    * This is outer function.
    *
@@ -169,9 +182,7 @@ export function fetchQuizzes() {
       const quizIdList = quizIdListRes.data.quizzes.map((quiz) => quiz.quizId);
 
       // get quiz detail based on quiz id list
-      const quizDetailListRes = await Promise.all(
-        quizIdList.map((quizId) => quizInfo(quizId))
-      );
+      const quizDetailListRes = await Promise.all(quizIdList.map((quizId) => quizInfo(quizId)));
 
       // assemble the quizzes details
       const quizDetailList = quizDetailListRes.map((res) => res.data);
@@ -215,31 +226,43 @@ export function fetchCreateQuiz(name: string, description: string) {
 }
 
 export function fetchEditQuiz(quizId: number, name: string, description: string) {
-  return (async (dispatch: any, getState: any) => {
+  return (async (dispatch: Dispatch, getState: () => RootState) => {
     try {
       // change quiz name and description
       await quizUpdateName(quizId, name);
       await quizUpdateDescription(quizId, description);
 
-      // change questions
-      const editingQuestions: Question[] = getState().user.editingQuiz.questions;
-      for (const q of editingQuestions) {
+      const rootState = getState();
+
+      // get origin questions and editing questions
+      const origin = rootState.user.quizzes.find((quiz) => quiz.quizId === quizId)!.questions;
+      const editing = rootState.user.editingQuiz.questions;
+
+      // delete questions that are removed in editing
+      for (const q of origin) {
+        if (!editing.find((e) => e.questionId === q.questionId)) {
+          await questionDelete(quizId, q.questionId);
+        }
+      }
+
+      // create or update questions that are in editing
+      for (const q of editing) {
         const questionBody = {
           question: q.question,
           duration: q.duration,
           points: q.points,
           answers: q.answers.map((a) => ({ answer: a.answer, correct: a.correct })),
         };
-        await questionUpdate(quizId, q.questionId, questionBody)
-          .catch(async () => {
-            await questionCreate(quizId, questionBody);
-          });
+        await questionUpdate(quizId, q.questionId, questionBody).catch(async () => {
+          await questionCreate(quizId, questionBody);
+        });
       }
 
+      // refresh state
       const { data: newQuiz } = await quizInfo(quizId);
       dispatch(
         setQuizzes(
-          getState().user.quizzes.map((quiz: Quiz) => (quiz.quizId === quizId ? newQuiz : quiz))
+          rootState.user.quizzes.map((quiz: Quiz) => (quiz.quizId === quizId ? newQuiz : quiz))
         )
       );
       return newQuiz;
@@ -283,7 +306,9 @@ export function fetchRestoreQuiz(quizIds: number[]) {
     await Promise.all(quizIds.map(async (quizId) => quizRestore(quizId)));
     // remove from trash
     quizIds.forEach((quizId) => {
-      dispatch(setTrashQuizzes(getState().user.trashQuizzes.filter((quiz) => quiz.quizId !== quizId)));
+      dispatch(
+        setTrashQuizzes(getState().user.trashQuizzes.filter((quiz) => quiz.quizId !== quizId))
+      );
     });
   }) as any;
 }
