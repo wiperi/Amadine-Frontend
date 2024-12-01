@@ -29,11 +29,11 @@ const QuizCard: React.FC<{ quiz: Quiz; onClick: () => void }> = ({ quiz, onClick
   return (
     <Card
       hoverable
-      className="group relative h-60 w-[25%] overflow-hidden transition-all duration-300"
+      className="group relative h-60 w-72 overflow-hidden transition-all duration-300"
       cover={
         <div className="absolute inset-0">
           <img
-            src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
+            src="https://static.vecteezy.com/system/resources/thumbnails/029/291/834/small/quiz-logo-with-speech-bubble-symbols-concept-of-questionnaire-show-sing-quiz-button-question-competition-png.png"
             alt="Background"
             className="h-full w-full object-cover"
           />
@@ -50,14 +50,17 @@ const QuizCard: React.FC<{ quiz: Quiz; onClick: () => void }> = ({ quiz, onClick
             ev.stopPropagation();
             catchAxiosError(async () => {
               // prompt user to input start number
-              const startNum = prompt('Please input the auto start number');
+              const startNum = prompt('Please input the auto start player number');
               if (!startNum) {
                 return;
               }
               const {
                 data: { sessionId },
               } = await quizSessionCreate(quiz.quizId, parseInt(startNum));
-              window.open(`/quiz-session/${sessionId}/admin?quizId=${quiz.quizId}&autoStartNum=${startNum}`, '_blank');
+              window.open(
+                `/quiz-session/${sessionId}/admin?quizId=${quiz.quizId}&autoStartNum=${startNum}`,
+                '_blank'
+              );
             });
           }}
         >
