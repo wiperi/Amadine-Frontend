@@ -45,14 +45,14 @@ const DashBoard: React.FC = () => {
   };
 
   const items: MenuProps['items'] = [
-    {
-      label: <a href="#">Edit Profile</a>,
-      key: '0',
-    },
-    {
-      label: <a href="#">Preferences</a>,
-      key: '1',
-    },
+    // {
+    //   label: <a href="#">Edit Profile</a>,
+    //   key: '0',
+    // },
+    // {
+    //   label: <a href="#">Preferences</a>,
+    //   key: '1',
+    // },
     {
       type: 'divider',
     },
@@ -76,13 +76,14 @@ const DashBoard: React.FC = () => {
       <Layout style={{ minHeight: '100vh' }}>
         {/* Header */}
         <Header className="fixed flex w-full items-center px-4">
-          <div className="logo" style={{ marginRight: '16px', color: 'white' }}>
+          <a href="/quiz" className="logo mr-4 text-white">
             <img src={logo} alt="logo" className="h-10 w-10" />
-          </div>
-          <Search
+          </a>
+
+          {/* <Search
             placeholder="Search public content"
             style={{ flex: 1, maxWidth: '600px', margin: '0 auto' }}
-          />
+          /> */}
           <div style={{ marginLeft: 'auto' }}>
             <Dropdown menu={{ items }} trigger={['click']}>
               <a onClick={(e) => e.preventDefault()} className="flex items-center">

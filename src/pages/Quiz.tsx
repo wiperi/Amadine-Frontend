@@ -57,9 +57,8 @@ const Quiz: React.FC = () => {
         <Header className="flex items-center justify-between px-0">
           <div>
             <Button type="primary" className="mr-2" onClick={() => onQuizCardClick(0)}>
-              Create
+              Create new quiz
             </Button>
-            <Button>Select</Button>
           </div>
           <Segmented<string>
             options={['Recent Edited', 'Newest', 'Oldest']}
@@ -82,7 +81,7 @@ const Quiz: React.FC = () => {
 
         {/* Quiz Cards */}
         <Content>
-          <Flex style={{ flexWrap: 'wrap' }} justify={'flex-start'} align={'flex-start'}>
+          <Flex style={{ flexWrap: 'wrap' }} justify={'flex-start'} align={'flex-start'} gap={8}>
             {quizzes.map((quiz) => (
               <QuizCard key={quiz.quizId} quiz={quiz} onClick={() => onQuizCardClick(quiz.quizId)} />
             ))}
