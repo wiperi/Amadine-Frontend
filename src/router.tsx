@@ -3,9 +3,9 @@ import { Navigation } from './pages/testPages/Navigation';
 import { createBrowserRouter } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 
-const PlayerLobby = lazy(() => import('./pages/QuizSession.tsx/PlayerLobby'));
-const PlayerJoin = lazy(() => import('./pages/QuizSession.tsx/PlayerJoin'));
-const AdminLobby = lazy(() => import('./pages/QuizSession.tsx/AdminLobby'));
+const PlayerLobby = lazy(() => import('./pages/QuizSession/PlayerLobby'));
+const PlayerJoin = lazy(() => import('./pages/QuizSession/PlayerJoin'));
+const AdminLobby = lazy(() => import('./pages/QuizSession/AdminLobby'));
 const DashBoard = lazy(() => import('./pages/DashBoard'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 const Login = lazy(() => import('./pages/Login'));

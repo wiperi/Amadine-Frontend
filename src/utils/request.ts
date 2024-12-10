@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { getToken, removeToken } from './token';
 import { router } from '@/router';
+import config from '@/config.json';
 
 const request = axios.create({
-  baseURL: 'http://localhost:3200',
+  baseURL: config.BACKEND_URL,
   timeout: 5000,
 });
 
