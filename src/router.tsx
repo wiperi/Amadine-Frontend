@@ -12,7 +12,7 @@ const Login = lazy(() => import('./pages/Login'));
 const AuthRoute = lazy(() => import('./pages/AuthRoute'));
 const Quiz = lazy(() => import('./pages/Quiz'));
 const TrashBin = lazy(() => import('./pages/TrashBin'));
-const About = lazy(() => import('./pages/About'));
+const Help = lazy(() => import('./pages/Help'));
 
 function suspenseWrapper(component: React.ReactNode) {
   return (
@@ -41,8 +41,8 @@ export const router = createBrowserRouter([
         element: suspenseWrapper(<TrashBin />),
       },
       {
-        path: 'about',
-        element: suspenseWrapper(<About />),
+        path: 'help',
+        element: suspenseWrapper(<Help />),
       },
     ]
   },

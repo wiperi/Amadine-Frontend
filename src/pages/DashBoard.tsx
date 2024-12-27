@@ -41,10 +41,10 @@ const DashBoard: React.FC = () => {
       path: 'trash-bin',
     },
     {
-      key: '/about',
+      key: '/help',
       icon: <QuestionCircleOutlined />,
-      title: 'About',
-      path: 'about',
+      title: 'Help',
+      path: 'help',
     },
   ];
 
