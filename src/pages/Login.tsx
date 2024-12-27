@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { fetchRegisterApi, fetchLoginApi } from '@/store/modules/userStore';
 import { AxiosError } from 'axios';
+import { catchAxiosError } from '@/utils/helpers';
 const { Content } = Layout;
 
 type FieldType = {
@@ -63,15 +64,9 @@ const Login: React.FC = () => {
   return (
     <Layout style={{ minHeight: '100vh', backgroundColor: '#f0f2f5' }}>
       <Content style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <div
-          style={{
-            width: 400,
-            padding: 24,
-            backgroundColor: 'white',
-            borderRadius: 4,
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-          }}
-        >
+        {/* Login and Register box */}
+        <div className="rounded bg-white p-6 shadow-md">
+          {/* Title */}
           <h1 style={{ textAlign: 'center', marginBottom: 24 }}>
             {isRegister ? 'Register' : 'Login'}
           </h1>
@@ -192,7 +187,7 @@ const Login: React.FC = () => {
             </Form.Item>
           </Form>
 
-          {/* Register and Forgot Password button */}
+          {/* Bottom buttons */}
           <Button
             type="link"
             style={{ marginLeft: '5rem' }}
@@ -200,7 +195,18 @@ const Login: React.FC = () => {
           >
             {isRegister ? 'Login' : 'Register'}
           </Button>
-          <Button type="link">Forgot Password?</Button>
+          <Button
+            type="link"
+            onClick={() => {
+              catchAxiosError(async () => {
+                await dispatch(fetchLoginApi('root@root.com', 'root1234'));
+                message.success('Login successful');
+                navigate('/quiz');
+              });
+            }}
+          >
+            Login with Demo Account
+          </Button>
         </div>
       </Content>
     </Layout>

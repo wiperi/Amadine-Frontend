@@ -1,4 +1,14 @@
-import { Layout, Menu, Input, Avatar, ConfigProvider, Dropdown, MenuProps } from 'antd';
+import {
+  Layout,
+  Menu,
+  Input,
+  Avatar,
+  ConfigProvider,
+  Dropdown,
+  MenuProps,
+  notification,
+  Button,
+} from 'antd';
 import {
   HomeOutlined,
   UserOutlined,
@@ -9,9 +19,10 @@ import { Link, Outlet, useLocation } from 'react-router-dom';
 import logo from '@/assets/images/logo192.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { setToken, setUserInfo } from '@/store/modules/userStore';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import enUS from 'antd/locale/en_US';
 import { DeleteOutlined } from '@ant-design/icons';
+import useNotification from 'antd/es/notification/useNotification';
 const { Header, Sider, Content } = Layout;
 const { Search } = Input;
 
@@ -71,8 +82,48 @@ const DashBoard: React.FC = () => {
   const [siderCollapsed, setSiderCollapsed] = useState(false);
   const location = useLocation();
 
+  const [api, contextHolder] = notification.useNotification();
+  useEffect(() => {
+    const dontShowHelperUntil = localStorage.getItem('dontShowHelperUntil');
+    const currentTime = Date.now();
+
+    if (dontShowHelperUntil && parseInt(dontShowHelperUntil) > currentTime) {
+      return;
+    }
+
+    api.info({
+      message: 'How to use',
+      description: (
+        <div>
+          <p>Click on a quiz directly to modify.</p>
+          <p>
+            Click the play button shown when hovering over a quiz card to start playing the quiz
+            with your friends!
+          </p>
+          <Button
+            type="link"
+            className="m-0 p-0"
+            onClick={() => {
+              localStorage.setItem(
+                'dontShowHelperUntil',
+                (Date.now() + 6 * 30 * 24 * 60 * 60 * 1000).toString()
+              );
+              api.destroy(); // Close the notification
+            }}
+          >
+            Don't show this again
+          </Button>
+        </div>
+      ),
+      placement: 'bottomRight',
+      duration: 0,
+    });
+  }, []);
+
   return (
     <ConfigProvider theme={{ components: { Layout: {} } }} locale={enUS}>
+      {contextHolder}
+
       <Layout style={{ minHeight: '100vh' }}>
         {/* Header */}
         <Header className="fixed flex w-full items-center px-4">
